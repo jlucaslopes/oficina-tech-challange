@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/pecas")
+@RequestMapping("/peca")
 public class PecaController {
 
     private final PecaService pecaService;
@@ -24,23 +24,23 @@ public class PecaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Peca> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Peca> buscarPorId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(pecaService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Peca> atualizar(@PathVariable Long id, @RequestBody Peca pecaAtualizada) {
+    public ResponseEntity<Peca> atualizar(@PathVariable("id") Long id, @RequestBody Peca pecaAtualizada) {
         return ResponseEntity.ok(pecaService.atualizar(id, pecaAtualizada));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletar(@PathVariable Long id) {
+    public ResponseEntity deletar(@PathVariable("id") Long id) {
         pecaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/estoque")
-    public ResponseEntity<Peca> atualizaEstoque(@PathVariable Long id, @RequestParam int quantidade) {
-        return ResponseEntity.ok(pecaService.atualizaEstoque(id, quantidade));
+    @PutMapping("/{id}/estoque")
+    public ResponseEntity<Peca> atualizaEstoque(@PathVariable("id") Long id, @RequestParam("quantidadeAdicionada") int quantidadeAdicionada) {
+        return ResponseEntity.ok(pecaService.atualizaEstoque(id, quantidadeAdicionada));
     }
 }

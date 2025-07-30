@@ -1,43 +1,22 @@
-package br.com.jlucaslopes.model;
+package br.com.jlucaslopes.model.request;
 
+public class VeiculoCreateRequest {
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-
-import java.util.UUID;
-
-@Entity
-public class Veiculo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String placa;
     private String fabricante;
     private String modelo;
     private String ano;
+    private String clienteDocumento;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_documento")
-    @JsonBackReference
-    private Cliente cliente;
-
-    public Cliente getCliente() {
-        return cliente;
+    public VeiculoCreateRequest(String placa, String fabricante, String modelo, String ano, String clienteDocumento) {
+        this.placa = placa;
+        this.fabricante = fabricante;
+        this.modelo = modelo;
+        this.ano = ano;
+        this.clienteDocumento = clienteDocumento;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public Veiculo() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public VeiculoCreateRequest() {
     }
 
     public String getPlaca() {
@@ -70,5 +49,13 @@ public class Veiculo {
 
     public void setAno(String ano) {
         this.ano = ano;
+    }
+
+    public String getClienteDocumento() {
+        return clienteDocumento;
+    }
+
+    public void setClienteDocumento(String clienteDocumento) {
+        this.clienteDocumento = clienteDocumento;
     }
 }

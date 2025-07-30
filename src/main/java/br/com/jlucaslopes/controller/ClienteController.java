@@ -18,12 +18,17 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getClienteById(@PathVariable String id) {
+    public ResponseEntity<Cliente> getClienteById(@PathVariable("id") String id) {
         return ResponseEntity.ok(clienteService.findClienteById(Integer.parseInt(id)));
     }
 
+    @GetMapping("documento/{documento}")
+    public ResponseEntity<Cliente> getClienteByDocumento(@PathVariable("documento") String documento) {
+        return ResponseEntity.ok(clienteService.findClienteByDocumento(documento));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClienteById(@PathVariable String id) {
+    public ResponseEntity<Void> deleteClienteById(@PathVariable("id") String id) {
         clienteService.deleteById(Integer.parseInt(id));
         return ResponseEntity.noContent().build();
     }

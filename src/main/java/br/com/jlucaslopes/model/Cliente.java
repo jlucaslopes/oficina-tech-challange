@@ -1,8 +1,7 @@
 package br.com.jlucaslopes.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -10,11 +9,13 @@ import java.util.List;
 public class Cliente {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String documento;
     private String nome;
 
     @OneToMany(mappedBy = "cliente" )
+    @JsonManagedReference
     private List<Veiculo> veiculos;
 
 
@@ -48,5 +49,8 @@ public class Cliente {
 
     public void setVeiculos(List<Veiculo> veiculos) {
         this.veiculos = veiculos;
+    }
+
+    public Cliente() {
     }
 }

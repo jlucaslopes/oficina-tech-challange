@@ -2,12 +2,10 @@ package br.com.jlucaslopes.controller;
 
 import br.com.jlucaslopes.model.Peca;
 import br.com.jlucaslopes.service.PecaService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/pecas")
@@ -21,8 +19,8 @@ public class PecaController {
     }
 
     @PostMapping
-    public Peca salvar(@RequestBody Peca peca) {
-        return pecaService.salvar(peca);
+    public ResponseEntity<Peca> salvar(@RequestBody Peca peca) {
+        return ResponseEntity.ok(pecaService.salvar(peca));
     }
 
     @GetMapping("/{id}")
@@ -32,7 +30,7 @@ public class PecaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Peca> atualizar(@PathVariable Long id, @RequestBody Peca pecaAtualizada) {
-        return pecaService.atualizar(id, pecaAtualizada);
+        return ResponseEntity.ok(pecaService.atualizar(id, pecaAtualizada));
     }
 
     @DeleteMapping("/{id}")
@@ -43,6 +41,6 @@ public class PecaController {
 
     @PatchMapping("/{id}/estoque")
     public ResponseEntity<Peca> atualizaEstoque(@PathVariable Long id, @RequestParam int quantidade) {
-        return pecaService.atualizaEstoque(id, quantidade);
+        return ResponseEntity.ok(pecaService.atualizaEstoque(id, quantidade));
     }
 }

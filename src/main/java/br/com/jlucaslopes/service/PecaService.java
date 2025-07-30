@@ -23,6 +23,9 @@ public class PecaService {
     public Peca atualizaEstoque(Long id, int quantidade) {
         return pecaRepository.findById(id)
                 .map(peca -> {
+                    if(peca.getQuantidadeEstoque() + quantidade < 0) {
+                        throw new RuntimeException("Quantidade inválida para atualização de estoque");
+                    }
                     peca.setQuantidadeEstoque(peca.getQuantidadeEstoque() + quantidade);
                     return pecaRepository.save(peca);
                 })

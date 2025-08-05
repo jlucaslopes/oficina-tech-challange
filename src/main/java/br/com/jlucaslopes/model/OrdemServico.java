@@ -55,10 +55,6 @@ public class OrdemServico {
         return dataInicio;
     }
 
-    public void setDataInicio(OffsetDateTime dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
     public OffsetDateTime getDataFim() {
         return dataFim;
     }

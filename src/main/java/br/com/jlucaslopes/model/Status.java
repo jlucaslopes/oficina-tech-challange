@@ -10,4 +10,22 @@ public enum Status {
     FINALIZADA,
     ENTREGUE,
     CANCELADA;
+
+    public Status avancar() {
+        return switch (this) {
+            case RECEBIDA -> EM_DIAGNOSTICO;
+            case EM_DIAGNOSTICO -> AGUARDANDO_APROVACAO;
+            case AGUARDANDO_APROVACAO -> EM_EXECUCAO;
+            case EM_EXECUCAO -> FINALIZADA;
+            case FINALIZADA -> ENTREGUE;
+            default -> throw new RuntimeException("Ordem nao pode ser avançada"); // Se já estiver em ENTREGUE ou CANCELADA, não avança
+        };
+    }
+
+    public Status retornar() {
+        return switch (this) {
+            case AGUARDANDO_APROVACAO, FINALIZADA, EM_EXECUCAO -> EM_DIAGNOSTICO;
+            default -> throw new RuntimeException("Ordem nao pode mais retornar");
+        };
+    }
 }

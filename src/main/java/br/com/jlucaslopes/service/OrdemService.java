@@ -56,9 +56,8 @@ public class OrdemService {
     public OrdemServico adicionarServico(Long ordemId, Servico servico) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
 
-        if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ||
-                ordemServico.getStatus() != Status.AGUARDANDO_APROVACAO) {
-            throw new RuntimeException("Nao é possível adicionar serviços a uma ordem que não esteja em diagnóstico ou aguardando aprovação.");
+        if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ) {
+            throw new RuntimeException("Nao é possível adicionar serviços a uma ordem que não esteja em diagnóstico");
         }
 
         if(servico.getPeca() != null) {
@@ -79,7 +78,7 @@ public class OrdemService {
     public OrdemServico avancarStatus(Long ordemId) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
         ordemServico.setStatus(ordemServico.getStatus().avancar());
-        if (ordemServico.getStatus() == Status.FINALIZADA) {
+        if (ordemServico.getStatus() == Status.ENTREGUE) {
             ordemServico.setDataFim(OffsetDateTime.now());
         }
         return ordemRepository.saveAndFlush(ordemServico);
@@ -107,8 +106,7 @@ public class OrdemService {
             return String.format("Tempo médio de ordem de serviço: %02d:%02d:%02d", hours, minutes, seconds);
     }
 
-        return "" ;
-
+        return "Nenhuma ordem de serviço finalizada foi encontrada.";
     }
 
 }

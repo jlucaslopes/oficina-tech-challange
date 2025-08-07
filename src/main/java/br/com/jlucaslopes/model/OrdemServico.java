@@ -9,6 +9,7 @@ import java.util.List;
 public class OrdemServico {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String descricao;
     private OffsetDateTime dataInicio;

@@ -53,4 +53,9 @@ public class Cliente {
 
     public Cliente() {
     }
+
+    public Cliente(String nome, String documento) {
+        this.nome = nome;
+        this.documento = documento;
+    }
 }

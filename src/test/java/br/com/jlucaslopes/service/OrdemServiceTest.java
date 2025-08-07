@@ -2,10 +2,7 @@ package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.*;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
-import br.com.jlucaslopes.repository.ClienteRepository;
-import br.com.jlucaslopes.repository.OrdemServicoRepository;
-import br.com.jlucaslopes.repository.PecaRepository;
-import br.com.jlucaslopes.repository.VeiculoRepository;
+import br.com.jlucaslopes.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,6 +28,8 @@ class OrdemServiceTest {
     private PecaRepository pecaRepository;
     @Mock
     private PecaService pecaService;
+    @Mock
+    private ServicoRepository servicoRepository;
 
     @InjectMocks
     private OrdemService ordemService;
@@ -272,6 +271,7 @@ class OrdemServiceTest {
 
         Mockito.when(pecaRepository.findPecaByDescricao("desc")).thenReturn(Optional.of(peca));
         Mockito.when(ordemRepository.saveAndFlush(Mockito.any())).thenReturn(ordem);
+        Mockito.when(servicoRepository.save(Mockito.any())).thenReturn(servico);
 
         OrdemServico result = ordemService.adicionarServico(1L, servico);
 
@@ -316,6 +316,7 @@ class OrdemServiceTest {
         servico.setQuantidade(1L);
 
         Mockito.when(ordemRepository.saveAndFlush(Mockito.any())).thenReturn(ordem);
+        Mockito.when(servicoRepository.save(Mockito.any())).thenReturn(servico);
 
         OrdemServico result = ordemService.adicionarServico(1L, servico);
 

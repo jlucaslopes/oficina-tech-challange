@@ -25,7 +25,7 @@ class VeiculoRepositoryTest {
     @DisplayName("findByPlaca retorna veiculo quando placa existe")
     void findByPlacaRetornaVeiculoQuandoExiste() {
         Cliente cliente = new Cliente();
-        cliente.setDocumento("123");
+        cliente.setDocumento("80122839056");
         cliente.setNome("Maria");
         clienteRepository.save(cliente);
 
@@ -51,7 +51,7 @@ class VeiculoRepositoryTest {
     @DisplayName("findByClienteDocumento retorna lista de veiculos do cliente")
     void findByClienteDocumentoRetornaLista() {
         Cliente cliente = new Cliente();
-        cliente.setDocumento("456");
+        cliente.setDocumento("80122839056");
         cliente.setNome("Carlos");
         clienteRepository.save(cliente);
 
@@ -60,9 +60,9 @@ class VeiculoRepositoryTest {
         veiculo1.setCliente(cliente);
         veiculoRepository.save(veiculo1);
 
-        List<Veiculo> result = veiculoRepository.findByClienteDocumento("456");
+        List<Veiculo> result = veiculoRepository.findByClienteDocumento("80122839056");
 
         assertEquals(1, result.size());
-        assertEquals("DEF5678", result.get(0).getPlaca());
+        assertEquals("DEF5678", result.getFirst().getPlaca());
     }
 }

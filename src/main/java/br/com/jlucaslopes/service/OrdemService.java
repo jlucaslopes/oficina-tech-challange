@@ -6,6 +6,7 @@ import br.com.jlucaslopes.repository.ClienteRepository;
 import br.com.jlucaslopes.repository.OrdemServicoRepository;
 import br.com.jlucaslopes.repository.PecaRepository;
 import br.com.jlucaslopes.repository.VeiculoRepository;
+import br.com.jlucaslopes.repository.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +22,23 @@ public class OrdemService {
     private final VeiculoRepository veiculoRepository;
     private final PecaRepository pecaRepository;
     private final PecaService pecaService;
+    private final ServicoRepository servicoRepository;
+    private final OrdemServicoRepository ordemServicoRepository;
 
     @Autowired
     public OrdemService(OrdemServicoRepository ordemRepository,
                         ClienteRepository clienteRepository,
-                        VeiculoRepository veiculoRepository, PecaRepository pecaRepository, PecaService pecaService) {
+                        VeiculoRepository veiculoRepository,
+                        PecaRepository pecaRepository,
+                        PecaService pecaService,
+                        ServicoRepository servicoRepository, OrdemServicoRepository ordemServicoRepository) {
+        this.servicoRepository = servicoRepository;
         this.ordemRepository = ordemRepository;
         this.clienteRepository = clienteRepository;
         this.veiculoRepository = veiculoRepository;
         this.pecaRepository = pecaRepository;
         this.pecaService = pecaService;
+        this.ordemServicoRepository = ordemServicoRepository;
     }
 
     public OrdemServico criarOrdemServico(OrdemServicoCreateRequest request) {
@@ -68,11 +76,26 @@ public class OrdemService {
 
             pecaService.atualizaEstoque(peca.getId(), Math.toIntExact(servico.getQuantidade() * -1));
         }
-
-
-        ordemServico.getServicos().add(servico);
+        servico.setOrdemServico(ordemServico);
+        Servico servicoSalvo = servicoRepository.save(servico);
+        ordemServico.getServicos().add(servicoSalvo);
 
         return ordemRepository.saveAndFlush(ordemServico);
+    }
+
+    public void deletarServico(Long ordemId, Servico servico) {
+        OrdemServico ordemServico = buscarOrdemPorId(ordemId);
+
+        if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ) {
+            throw new RuntimeException("Nao é possível alterar serviços a uma ordem que não esteja em diagnóstico");
+        }
+
+        Servico servicoFounded = ordemServico.getServicos().stream()
+                .filter(s -> s.getId().equals(servico.getId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado na ordem de serviço: " + servico.getId()));
+
+        servicoRepository.delete(servicoFounded);
     }
 
     public OrdemServico avancarStatus(Long ordemId) {

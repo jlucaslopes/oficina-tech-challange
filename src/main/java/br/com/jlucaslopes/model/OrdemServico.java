@@ -20,7 +20,7 @@ public class OrdemServico {
     @JoinColumn(name = "veiculo_id")
     private Veiculo veiculo;
 
-    @OneToMany
+    @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL)
     private List<Servico> servicos;
 
     public OrdemServico() {

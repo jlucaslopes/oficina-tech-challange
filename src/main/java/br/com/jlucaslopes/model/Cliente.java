@@ -2,6 +2,7 @@ package br.com.jlucaslopes.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CPF
     private String documento;
     private String nome;
 
@@ -52,5 +54,10 @@ public class Cliente {
     }
 
     public Cliente() {
+    }
+
+    public Cliente(String nome, String documento) {
+        this.nome = nome;
+        this.documento = documento;
     }
 }

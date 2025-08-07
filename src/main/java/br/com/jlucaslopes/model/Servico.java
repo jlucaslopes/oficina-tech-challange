@@ -1,18 +1,22 @@
 package br.com.jlucaslopes.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
 @Entity
 public class Servico {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private Long quantidade;
 
+    @ManyToOne
+    @JoinColumn(name = "ordem_id", insertable = true, updatable = true)
+    @JsonBackReference
+    private OrdemServico ordemServico;
 
     @ManyToOne
     @JoinColumn(name = "id_peca")
@@ -48,5 +52,13 @@ public class Servico {
 
     public void setPeca(Peca peca) {
         this.peca = peca;
+    }
+
+    public OrdemServico getOrdemServico() {
+        return ordemServico;
+    }
+
+    public void setOrdemServico(OrdemServico ordemServico) {
+        this.ordemServico = ordemServico;
     }
 }

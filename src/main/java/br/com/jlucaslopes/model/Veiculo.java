@@ -3,6 +3,7 @@ package br.com.jlucaslopes.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.UUID;
 
@@ -12,6 +13,9 @@ public class Veiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Pattern(regexp = "^[A-Z]{3}[0-9]{4}$|^[A-Z]{3}[0-9][A-Z][0-9]{2}$",
+            message ="Placa deve seguir o formato AAA0A00 ou AAA0A000")
     private String placa;
     private String fabricante;
     private String modelo;

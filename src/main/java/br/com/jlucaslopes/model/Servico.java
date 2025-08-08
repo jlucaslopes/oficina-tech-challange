@@ -12,6 +12,7 @@ public class Servico {
     private Long id;
     private String nome;
     private Long quantidade;
+    private Double preco;
 
     @ManyToOne
     @JoinColumn(name = "ordem_id", insertable = true, updatable = true)
@@ -60,5 +61,13 @@ public class Servico {
 
     public void setOrdemServico(OrdemServico ordemServico) {
         this.ordemServico = ordemServico;
+    }
+
+    public Double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(Double preco) {
+        this.preco = preco;
     }
 }

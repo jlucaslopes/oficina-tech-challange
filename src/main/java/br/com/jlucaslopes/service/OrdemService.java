@@ -83,21 +83,6 @@ public class OrdemService {
         return ordemRepository.saveAndFlush(ordemServico);
     }
 
-    public void deletarServico(Long ordemId, Servico servico) {
-        OrdemServico ordemServico = buscarOrdemPorId(ordemId);
-
-        if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ) {
-            throw new RuntimeException("Nao é possível alterar serviços a uma ordem que não esteja em diagnóstico");
-        }
-
-        Servico servicoFounded = ordemServico.getServicos().stream()
-                .filter(s -> s.getId().equals(servico.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Serviço não encontrado na ordem de serviço: " + servico.getId()));
-
-        servicoRepository.delete(servicoFounded);
-    }
-
     public OrdemServico avancarStatus(Long ordemId) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
         ordemServico.setStatus(ordemServico.getStatus().avancar());

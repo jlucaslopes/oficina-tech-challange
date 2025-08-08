@@ -20,11 +20,11 @@ class ClienteRepositoryTest {
     @DisplayName("findClienteByDocumento retorna cliente quando documento existe")
     void findClienteByDocumentoRetornaClienteQuandoExiste() {
         Cliente cliente = new Cliente();
-        cliente.setDocumento("123456789");
+        cliente.setDocumento("80122839056");
         cliente.setNome("João");
         clienteRepository.save(cliente);
 
-        Optional<Cliente> result = clienteRepository.findClienteByDocumento("123456789");
+        Optional<Cliente> result = clienteRepository.findClienteByDocumento("80122839056");
 
         assertTrue(result.isPresent());
         assertEquals("João", result.get().getNome());

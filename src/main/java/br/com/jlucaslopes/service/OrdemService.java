@@ -2,11 +2,13 @@ package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.*;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
+import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.repository.ClienteRepository;
 import br.com.jlucaslopes.repository.OrdemServicoRepository;
 import br.com.jlucaslopes.repository.PecaRepository;
 import br.com.jlucaslopes.repository.VeiculoRepository;
 import br.com.jlucaslopes.repository.ServicoRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,23 +63,32 @@ public class OrdemService {
                 .orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada com o ID: " + id));
     }
 
-    public OrdemServico adicionarServico(Long ordemId, Servico servico) {
+    public OrdemServico adicionarServico(Long ordemId, ServicoCreateRequest servicoRequest) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
 
         if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ) {
             throw new RuntimeException("Nao é possível adicionar serviços a uma ordem que não esteja em diagnóstico");
         }
 
-        if(servico.getPeca() != null) {
-            Peca peca = pecaRepository.findPecaByDescricao(servico.getPeca().getDescricao())
-                    .orElseThrow(() -> new IllegalArgumentException("Peça não encontrada: " + servico.getPeca().getDescricao()));
-            if(peca.getQuantidadeEstoque() < servico.getQuantidade())
+        Servico servico;
+        Peca peca = null;
+        if(servicoRequest.getIdPeca() != null) {
+            peca = pecaRepository.findById(servicoRequest.getIdPeca())
+                    .orElseThrow(() -> new IllegalArgumentException("Peça não encontrada: " + servicoRequest.getIdPeca()));
+            if(peca.getQuantidadeEstoque() < servicoRequest.getQuantidade())
                 throw new RuntimeException("Estoque insuficiente para a peça: " + peca.getDescricao());
 
-            pecaService.atualizaEstoque(peca.getId(), Math.toIntExact(servico.getQuantidade() * -1));
+            pecaService.atualizaEstoque(peca.getId(), Math.toIntExact(servicoRequest.getQuantidade() * -1));
+
+            servico = servicoRequest.toServico(peca);
+
+        } else {
+            servico = servicoRequest.toServico();
         }
         servico.setOrdemServico(ordemServico);
+
         Servico servicoSalvo = servicoRepository.save(servico);
+
         ordemServico.getServicos().add(servicoSalvo);
 
         return ordemRepository.saveAndFlush(ordemServico);

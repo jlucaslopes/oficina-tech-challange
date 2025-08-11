@@ -3,6 +3,7 @@ package br.com.jlucaslopes.controller;
 import br.com.jlucaslopes.model.OrdemServico;
 import br.com.jlucaslopes.model.Servico;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
+import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.service.OrdemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,7 +37,7 @@ public class OrdemController {
 
     @PostMapping("/{id}/servicos")
     @Operation(summary = "Adicionar serviço à ordem", description = "Adiciona um serviço à ordem de serviço especificada pelo ID.")
-    public OrdemServico adicionarServico(@PathVariable("id") Long id, @RequestBody Servico servico) {
+    public OrdemServico adicionarServico(@PathVariable("id") Long id, @RequestBody ServicoCreateRequest servico) {
         return ordemService.adicionarServico(id, servico);
     }
 

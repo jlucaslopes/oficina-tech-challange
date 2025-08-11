@@ -3,6 +3,7 @@ package br.com.jlucaslopes.controller;
 import br.com.jlucaslopes.model.OrdemServico;
 import br.com.jlucaslopes.model.Servico;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
+import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.service.OrdemService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,14 +69,14 @@ class OrdemControllerTest {
         Servico servico = new Servico();
         OrdemServico ordemServico = new OrdemServico();
 
-        when(ordemService.adicionarServico(eq(1L), any(Servico.class))).thenReturn(ordemServico);
+        when(ordemService.adicionarServico(eq(1L), any(ServicoCreateRequest.class))).thenReturn(ordemServico);
 
         mockMvc.perform(post("/ordens/1/servicos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isOk());
 
-        verify(ordemService, times(1)).adicionarServico(eq(1L), any(Servico.class));
+        verify(ordemService, times(1)).adicionarServico(eq(1L), any(ServicoCreateRequest.class));
     }
 
     @Test

@@ -333,4 +333,25 @@ class OrdemServiceTest {
         assertTrue(ordem.getServicos().contains(servico));
         assertEquals(ordem, result);
     }
+
+    @Test
+    void cancelarOrdemCancelaOrdemQuandoStatusValido() {
+        OrdemServico ordem = new OrdemServico();
+        ordem.setStatus(Status.EM_DIAGNOSTICO);
+        Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
+        Mockito.when(ordemRepository.saveAndFlush(Mockito.any())).thenReturn(ordem);
+
+        OrdemServico result = ordemService.cancelarOrdem(1L);
+
+        assertEquals(Status.CANCELADA, result.getStatus());
+    }
+
+    @Test
+    void cancelarOrdemCancelaOrdemQuandoStatusInvalido() {
+        OrdemServico ordem = new OrdemServico();
+        ordem.setStatus(Status.FINALIZADA);
+        Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
+
+        assertThrows(RuntimeException.class, () -> ordemService.cancelarOrdem(1L));
+    }
 }

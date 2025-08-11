@@ -128,4 +128,15 @@ class OrdemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Nenhuma ordem de serviço finalizada foi encontrada."));
     }
+
+    @Test
+    @DisplayName("Deve cancelar uma ordem com sucesso")
+    void cancelarOrdemComSucesso() throws Exception {
+        OrdemServico ordemServico = new OrdemServico();
+        when(ordemService.cancelarOrdem(1L)).thenReturn(ordemServico);
+        mockMvc.perform(post("/ordens/1/cancelar"))
+                .andExpect(status().isOk());
+        verify(ordemService, times(1)).cancelarOrdem(1L);
+    }
+
 }

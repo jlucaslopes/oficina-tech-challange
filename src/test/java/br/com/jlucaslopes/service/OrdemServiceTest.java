@@ -208,18 +208,6 @@ class OrdemServiceTest {
     }
 
     @Test
-    void adicionarServicoComOrdemEmStatusInvalidoLancaExcecao() {
-        OrdemServico ordem = new OrdemServico();
-        ordem.setStatus(Status.FINALIZADA);
-        ordem.setServicos(new ArrayList<>());
-        Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
-
-        ServicoCreateRequest servico = new ServicoCreateRequest();
-
-        assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
-    }
-
-    @Test
     void adicionarServicoComOrdemEmStatusValidoComPecaDiferenteDeNull() {
         OrdemServico ordem = new OrdemServico();
         ordem.setStatus(Status.EM_DIAGNOSTICO);

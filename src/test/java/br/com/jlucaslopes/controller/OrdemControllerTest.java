@@ -1,7 +1,6 @@
 package br.com.jlucaslopes.controller;
 
 import br.com.jlucaslopes.model.OrdemServico;
-import br.com.jlucaslopes.model.Servico;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.service.OrdemService;

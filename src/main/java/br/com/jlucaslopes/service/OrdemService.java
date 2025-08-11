@@ -11,12 +11,10 @@ import br.com.jlucaslopes.repository.OrdemServicoRepository;
 import br.com.jlucaslopes.repository.PecaRepository;
 import br.com.jlucaslopes.repository.VeiculoRepository;
 import br.com.jlucaslopes.repository.ServicoRepository;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.OptionalDouble;
 
 @Service

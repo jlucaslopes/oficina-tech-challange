@@ -21,6 +21,10 @@ public class ClienteService {
     }
 
     public Cliente save(Cliente cliente) {
+        clienteRepository.findClienteByDocumento(cliente.getDocumento())
+                .ifPresent(existingCliente -> {
+                    throw new RuntimeException("Cliente com documento " + cliente.getDocumento() + " ja existe");
+                });
         return clienteRepository.save(cliente);
     }
     public void deleteById(int id) {

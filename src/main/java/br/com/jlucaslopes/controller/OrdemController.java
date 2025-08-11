@@ -52,6 +52,13 @@ public class OrdemController {
         return ordemService.retornarStatus(id);
     }
 
+
+    @PostMapping("/{id}/cancelar")
+    @Operation(summary = "Cancelar ordem", description = "Cancela a ordem de serviço especificada pelo ID.")
+    public OrdemServico cancelarOrdem(@PathVariable("id") Long id) {
+        return ordemService.cancelarOrdem(id);
+    }
+
     @GetMapping("/tempo-medio")
     @Operation(summary = "Tempo médio de conclusão", description = "Retorna o tempo médio de conclusão das ordens de serviço.")
     public String tempoMedio() {

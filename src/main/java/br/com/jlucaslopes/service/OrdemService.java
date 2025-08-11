@@ -117,4 +117,13 @@ public class OrdemService {
         return "Nenhuma ordem de serviço finalizada foi encontrada.";
     }
 
+    public OrdemServico cancelarOrdem(Long id) {
+        OrdemServico ordemServico = buscarOrdemPorId(id);
+        if (ordemServico.getStatus() == Status.ENTREGUE || ordemServico.getStatus() == Status.CANCELADA || ordemServico.getStatus() == Status.FINALIZADA) {
+            throw new RuntimeException("Ordem nao pode ser cancelada");
+        }
+        ordemServico.setStatus(Status.CANCELADA);
+        ordemServico.setDataFim(OffsetDateTime.now());
+        return ordemServicoRepository.saveAndFlush(ordemServico);
+    }
 }

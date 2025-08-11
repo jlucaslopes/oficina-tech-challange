@@ -7,9 +7,6 @@ public class OrdemServicoCreateRequest {
     private String idCliente;
     private String descricao;
 
-    public OrdemServicoCreateRequest() {
-    }
-
     public String getPlacaVeiculo() {
         return placaVeiculo;
     }

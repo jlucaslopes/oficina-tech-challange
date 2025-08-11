@@ -15,8 +15,6 @@ public class Peca {
     private Double valorUnitario;
     private int quantidadeEstoque;
 
-    public Peca() {}
-
     public Long getId() {
         return id;
     }

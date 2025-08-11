@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 
-import java.util.UUID;
 
 @Entity
 public class Veiculo {
 
+    public static final String REGEX_VALIDA_PLACA = "^[A-Z]{3}\\d{4}$|^[A-Z]{3}\\d[A-Z]\\d{2}$";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Pattern(regexp = "^[A-Z]{3}[0-9]{4}$|^[A-Z]{3}[0-9][A-Z][0-9]{2}$",
+    @Pattern(regexp = REGEX_VALIDA_PLACA,
             message ="Placa deve seguir o formato AAA0A00 ou AAA0A000")
     private String placa;
     private String fabricante;
@@ -33,8 +33,6 @@ public class Veiculo {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-
-    public Veiculo() {}
 
     public Long getId() {
         return id;

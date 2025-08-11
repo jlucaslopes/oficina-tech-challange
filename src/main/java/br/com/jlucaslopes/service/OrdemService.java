@@ -1,6 +1,9 @@
 package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.*;
+import br.com.jlucaslopes.model.exception.CancelarOrdemException;
+import br.com.jlucaslopes.model.exception.EstoqueInsuficienteException;
+import br.com.jlucaslopes.model.exception.OrdemStatusInvalidoAddServicoException;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.repository.ClienteRepository;
@@ -67,7 +70,7 @@ public class OrdemService {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
 
         if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ) {
-            throw new RuntimeException("Nao é possível adicionar serviços a uma ordem que não esteja em diagnóstico");
+            throw new OrdemStatusInvalidoAddServicoException("Nao é possível adicionar serviços a uma ordem que não esteja em diagnóstico");
         }
 
         Servico servico;
@@ -76,7 +79,7 @@ public class OrdemService {
             peca = pecaRepository.findById(servicoRequest.getIdPeca())
                     .orElseThrow(() -> new IllegalArgumentException("Peça não encontrada: " + servicoRequest.getIdPeca()));
             if(peca.getQuantidadeEstoque() < servicoRequest.getQuantidade())
-                throw new RuntimeException("Estoque insuficiente para a peça: " + peca.getDescricao());
+                throw new EstoqueInsuficienteException("Estoque insuficiente para a peça: " + peca.getDescricao());
 
             pecaService.atualizaEstoque(peca.getId(), Math.toIntExact(servicoRequest.getQuantidade() * -1));
 
@@ -131,7 +134,7 @@ public class OrdemService {
     public OrdemServico cancelarOrdem(Long id) {
         OrdemServico ordemServico = buscarOrdemPorId(id);
         if (ordemServico.getStatus() == Status.ENTREGUE || ordemServico.getStatus() == Status.CANCELADA || ordemServico.getStatus() == Status.FINALIZADA) {
-            throw new RuntimeException("Ordem nao pode ser cancelada");
+            throw new CancelarOrdemException("Ordem nao pode ser cancelada");
         }
         ordemServico.setStatus(Status.CANCELADA);
         ordemServico.setDataFim(OffsetDateTime.now());

@@ -1,14 +1,12 @@
 package br.com.jlucaslopes.controller;
 
 import br.com.jlucaslopes.model.OrdemServico;
-import br.com.jlucaslopes.model.Servico;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.service.OrdemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

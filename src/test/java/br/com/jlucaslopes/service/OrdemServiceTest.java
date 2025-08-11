@@ -115,7 +115,7 @@ class OrdemServiceTest {
         Mockito.when(ordemRepository.saveAndFlush(Mockito.any())).thenReturn(ordem);
 
         OrdemServico ordemServico = ordemService.avancarStatus(1L);
-        assertTrue(ordemServico.getStatus().equals(Status.ENTREGUE));
+        assertEquals(Status.ENTREGUE,ordemServico.getStatus());
         assertTrue(ordemServico.getDataFim().isAfter(OffsetDateTime.now().minusMinutes(1)));
     }
 
@@ -232,9 +232,6 @@ class OrdemServiceTest {
         pecaEstoque.setId(1L);
         pecaEstoque.setDescricao("desc");
         pecaEstoque.setQuantidadeEstoque(10);
-
-//        Mockito.when(pecaRepository.findById(1l)).thenReturn(Optional.of(pecaEstoque));
-
 
         assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
     }

@@ -1,4 +1,4 @@
-package br.com.jlucaslopes.controller.exceptionHandler;
+package br.com.jlucaslopes.controller.exception;
 
 
 import org.springframework.http.HttpStatus;

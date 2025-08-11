@@ -1,6 +1,8 @@
 package br.com.jlucaslopes.model;
 
 
+import br.com.jlucaslopes.model.exception.StatusNaoPodeMudarException;
+
 public enum Status {
 
     RECEBIDA,
@@ -18,14 +20,14 @@ public enum Status {
             case AGUARDANDO_APROVACAO -> EM_EXECUCAO;
             case EM_EXECUCAO -> FINALIZADA;
             case FINALIZADA -> ENTREGUE;
-            default -> throw new RuntimeException("Ordem nao pode ser avançada"); // Se já estiver em ENTREGUE ou CANCELADA, não avança
+            default -> throw new StatusNaoPodeMudarException("Ordem nao pode ser avançada"); // Se já estiver em ENTREGUE ou CANCELADA, não avança
         };
     }
 
     public Status retornar() {
         return switch (this) {
             case AGUARDANDO_APROVACAO, FINALIZADA, EM_EXECUCAO -> EM_DIAGNOSTICO;
-            default -> throw new RuntimeException("Ordem nao pode mais retornar");
+            default -> throw new StatusNaoPodeMudarException("Ordem nao pode mais retornar");
         };
     }
 }

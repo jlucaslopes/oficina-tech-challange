@@ -2,6 +2,9 @@ package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.Cliente;
 import br.com.jlucaslopes.model.Veiculo;
+import br.com.jlucaslopes.model.exception.ClienteNaoEncontradoException;
+import br.com.jlucaslopes.model.exception.VeiculoJaCadastradoException;
+import br.com.jlucaslopes.model.exception.VeiculoNaoEncontradoException;
 import br.com.jlucaslopes.model.request.VeiculoCreateRequest;
 import br.com.jlucaslopes.repository.ClienteRepository;
 import br.com.jlucaslopes.repository.VeiculoRepository;
@@ -9,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VeiculoService {
@@ -26,11 +28,11 @@ public class VeiculoService {
     public Veiculo salvar(VeiculoCreateRequest veiculoRequest) {
 
         Cliente cliente = clienteRepository.findClienteByDocumento(veiculoRequest.getClienteDocumento())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado"));
 
         veiculoRepository.findByPlaca(veiculoRequest.getPlaca())
-                .ifPresent((veiculoExistente) -> {
-                    throw new RuntimeException("Veículo com placa " + veiculoRequest.getPlaca() + " já cadastrado");
+                .ifPresent(veiculoExistente -> {
+                    throw new VeiculoJaCadastradoException("Veículo com placa " + veiculoRequest.getPlaca() + " já cadastrado");
                 });
 
         Veiculo veiculo = new Veiculo();
@@ -45,7 +47,7 @@ public class VeiculoService {
 
 
     public Veiculo buscarPorId(Long id) {
-        return veiculoRepository.findById(id).orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+        return veiculoRepository.findById(id).orElseThrow(() -> new VeiculoNaoEncontradoException("Veículo não encontrado"));
     }
 
     public Veiculo atualizar(Long id, Veiculo veiculoAtualizado) {
@@ -57,7 +59,7 @@ public class VeiculoService {
                     veiculo.setAno(veiculoAtualizado.getAno());
                     return veiculoRepository.save(veiculo);
                 })
-                .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+                .orElseThrow(() -> new VeiculoNaoEncontradoException("Veículo não encontrado"));
     }
 
     public void deletar(Long id) {
@@ -70,6 +72,6 @@ public class VeiculoService {
 
     public Veiculo findVeiculoByPlaca(String placa) {
         return veiculoRepository.findByPlaca(placa)
-                .orElseThrow(() -> new RuntimeException("Veículo com placa " + placa + " não encontrado"));
+                .orElseThrow(() -> new VeiculoNaoEncontradoException("Veículo com placa " + placa + " não encontrado"));
     }
 }

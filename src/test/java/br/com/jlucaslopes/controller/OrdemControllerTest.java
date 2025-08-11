@@ -38,7 +38,6 @@ class OrdemControllerTest {
     @Test
     @DisplayName("Deve criar uma ordem com sucesso")
     void criarOrdemComSucesso() throws Exception {
-        OrdemServicoCreateRequest request = new OrdemServicoCreateRequest();
         OrdemServico ordemServico = new OrdemServico();
 
         when(ordemService.criarOrdemServico(any(OrdemServicoCreateRequest.class))).thenReturn(ordemServico);
@@ -66,7 +65,6 @@ class OrdemControllerTest {
     @Test
     @DisplayName("Deve adicionar um serviço a uma ordem")
     void adicionarServico() throws Exception {
-        Servico servico = new Servico();
         OrdemServico ordemServico = new OrdemServico();
 
         when(ordemService.adicionarServico(eq(1L), any(ServicoCreateRequest.class))).thenReturn(ordemServico);

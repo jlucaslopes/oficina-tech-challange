@@ -40,7 +40,7 @@ public class PecaController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar peça por ID", description = "Remove a peça correspondente ao ID informado.")
-    public ResponseEntity deletar(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deletar(@PathVariable("id") Long id) {
         pecaService.deletar(id);
         return ResponseEntity.noContent().build();
     }

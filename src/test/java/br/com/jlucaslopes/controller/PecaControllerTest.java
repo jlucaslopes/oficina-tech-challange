@@ -1,6 +1,5 @@
 package br.com.jlucaslopes.controller;
 
-import br.com.jlucaslopes.controller.PecaController;
 import br.com.jlucaslopes.model.Peca;
 import br.com.jlucaslopes.service.PecaService;
 import org.junit.jupiter.api.Test;

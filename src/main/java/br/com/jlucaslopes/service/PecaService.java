@@ -1,14 +1,15 @@
 package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.Peca;
+import br.com.jlucaslopes.model.exception.PecaNaoEncontradaException;
+import br.com.jlucaslopes.model.exception.QuantidadeInvalidaEstoque;
 import br.com.jlucaslopes.repository.PecaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class PecaService {
+    public static final String PECA_NAO_CADASTRADA_MESSAGE = "Peça não cadastrada";
     private final PecaRepository pecaRepository;
 
     @Autowired
@@ -24,26 +25,27 @@ public class PecaService {
         return pecaRepository.findById(id)
                 .map(peca -> {
                     if(peca.getQuantidadeEstoque() + quantidade < 0) {
-                        throw new RuntimeException("Quantidade inválida para atualização de estoque");
+                        throw new QuantidadeInvalidaEstoque("Quantidade inválida para atualização de estoque");
                     }
                     peca.setQuantidadeEstoque(peca.getQuantidadeEstoque() + quantidade);
                     return pecaRepository.save(peca);
                 })
-                .orElseThrow(() -> new RuntimeException("Peça não cadastrada"));
+                .orElseThrow(() -> new PecaNaoEncontradaException(PECA_NAO_CADASTRADA_MESSAGE));
     }
 
     public Peca buscarPorId(Long id) {
-        return pecaRepository.findById(id).orElseThrow(() -> new RuntimeException("Peça não cadastrada"));
+        return pecaRepository.findById(id).orElseThrow(() -> new PecaNaoEncontradaException(PECA_NAO_CADASTRADA_MESSAGE));
     }
 
     public Peca atualizar(Long id, Peca pecaAtualizada) {
         return pecaRepository.findById(id)
                 .map(peca -> {
                     peca.setDescricao(pecaAtualizada.getDescricao());
-                    // outros campos...
+                    peca.setValorUnitario(pecaAtualizada.getValorUnitario());
+                    peca.setQuantidadeEstoque(pecaAtualizada.getQuantidadeEstoque());
                     return pecaRepository.save(peca);
                 })
-                .orElseThrow(() -> new RuntimeException("Peça não cadastrada"));
+                .orElseThrow(() -> new PecaNaoEncontradaException(PECA_NAO_CADASTRADA_MESSAGE));
     }
 
     public void deletar(Long id) {

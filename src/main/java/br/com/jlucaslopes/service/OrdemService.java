@@ -69,6 +69,8 @@ public class OrdemService {
         if(ordemServico.getStatus() != Status.EM_DIAGNOSTICO ) {
             throw new RuntimeException("Nao é possível adicionar serviços a uma ordem que não esteja em diagnóstico");
         }
+
+        Servico servico;
         Peca peca = null;
         if(servicoRequest.getIdPeca() != null) {
             peca = pecaRepository.findById(servicoRequest.getIdPeca())
@@ -77,8 +79,12 @@ public class OrdemService {
                 throw new RuntimeException("Estoque insuficiente para a peça: " + peca.getDescricao());
 
             pecaService.atualizaEstoque(peca.getId(), Math.toIntExact(servicoRequest.getQuantidade() * -1));
+
+            servico = servicoRequest.toServico(peca);
+
+        } else {
+            servico = servicoRequest.toServico();
         }
-        Servico servico = servicoRequest.toServico(peca);
         servico.setOrdemServico(ordemServico);
 
         Servico servicoSalvo = servicoRepository.save(servico);

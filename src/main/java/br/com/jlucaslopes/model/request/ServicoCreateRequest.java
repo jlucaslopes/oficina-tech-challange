@@ -7,6 +7,7 @@ public class ServicoCreateRequest {
 
     private String nome;
     private Long quantidade;
+    private Double preco;
     private Long idPeca;
 
     public String getNome() {
@@ -33,11 +34,28 @@ public class ServicoCreateRequest {
         this.idPeca = idPeca;
     }
 
+    public Double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(Double preco) {
+        this.preco = preco;
+    }
+
     public Servico toServico(Peca peca) {
         Servico servico = new Servico();
         servico.setNome(this.nome);
         servico.setQuantidade(this.quantidade);
+        servico.setPreco(peca.getValorUnitario() * this.quantidade);
         servico.setPeca(peca);
+        return servico;
+    }
+
+    public Servico toServico() {
+        Servico servico = new Servico();
+        servico.setNome(this.nome);
+        servico.setQuantidade(this.quantidade);
+        servico.setPreco(this.preco);
         return servico;
     }
 }

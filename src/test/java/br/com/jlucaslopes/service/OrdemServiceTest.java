@@ -2,6 +2,7 @@ package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.*;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
+import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrdemServiceTest {
@@ -168,7 +170,7 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
+        ServicoCreateRequest servico = new ServicoCreateRequest();
 
         assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
     }
@@ -180,7 +182,7 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
+        ServicoCreateRequest servico = new ServicoCreateRequest();
 
         assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
     }
@@ -192,13 +194,15 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
+        ServicoCreateRequest servico = new ServicoCreateRequest();
+        servico.setIdPeca(1l);
+        servico.setQuantidade(2L);
+
         Peca peca = new Peca();
         peca.setDescricao("desc");
         peca.setQuantidadeEstoque(1);
-        servico.setPeca(peca);
-        servico.setQuantidade(2L);
 
+        Mockito.when(pecaRepository.findById(1l)).thenReturn(Optional.of(peca));
 
         assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
     }
@@ -210,7 +214,7 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
+        ServicoCreateRequest servico = new ServicoCreateRequest();
 
         assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
     }
@@ -222,16 +226,15 @@ class OrdemServiceTest {
 
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
-        Peca pecaServico = new Peca();
-        pecaServico.setDescricao("desc");
-        servico.setPeca(pecaServico);
-        servico.setQuantidade(2L);
+        ServicoCreateRequest servico = new ServicoCreateRequest();
 
         Peca pecaEstoque = new Peca();
         pecaEstoque.setId(1L);
         pecaEstoque.setDescricao("desc");
         pecaEstoque.setQuantidadeEstoque(10);
+
+//        Mockito.when(pecaRepository.findById(1l)).thenReturn(Optional.of(pecaEstoque));
+
 
         assertThrows(RuntimeException.class, () -> ordemService.adicionarServico(1L, servico));
     }
@@ -243,13 +246,11 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
-        Peca peca = new Peca();
-        peca.setDescricao("desc");
-        servico.setPeca(peca);
+        ServicoCreateRequest servico = new ServicoCreateRequest();
+        servico.setIdPeca(1L);
         servico.setQuantidade(1L);
 
-        Mockito.when(pecaRepository.findPecaByDescricao("desc")).thenReturn(Optional.empty());
+        Mockito.when(pecaRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> ordemService.adicionarServico(1L, servico));
     }
@@ -261,19 +262,25 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
+        ServicoCreateRequest servicoCreateRequest = new ServicoCreateRequest();
         Peca peca = new Peca();
         peca.setId(10L);
         peca.setDescricao("desc");
         peca.setQuantidadeEstoque(5);
-        servico.setPeca(peca);
-        servico.setQuantidade(2L);
+        peca.setValorUnitario(10.0);
+        servicoCreateRequest.setIdPeca(1L);
+        servicoCreateRequest.setQuantidade(2L);
 
-        Mockito.when(pecaRepository.findPecaByDescricao("desc")).thenReturn(Optional.of(peca));
+        Servico servico = new Servico();
+        servico.setId(1L);
+        servico.setPeca(peca);
+        servico.setNome("Nome");
+
+        Mockito.when(pecaRepository.findById(anyLong())).thenReturn(Optional.of(peca));
         Mockito.when(ordemRepository.saveAndFlush(Mockito.any())).thenReturn(ordem);
         Mockito.when(servicoRepository.save(Mockito.any())).thenReturn(servico);
 
-        OrdemServico result = ordemService.adicionarServico(1L, servico);
+        OrdemServico result = ordemService.adicionarServico(1L, servicoCreateRequest);
 
         Mockito.verify(pecaService).atualizaEstoque(10L, -2);
         assertTrue(ordem.getServicos().contains(servico));
@@ -288,16 +295,16 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
-        Servico servico = new Servico();
+        ServicoCreateRequest servico = new ServicoCreateRequest();
         Peca peca = new Peca();
         peca.setId(10L);
         peca.setDescricao("desc");
         peca.setQuantidadeEstoque(5);
-        servico.setPeca(peca);
+        servico.setIdPeca(1L);
         servico.setQuantidade(7L);
 
-        Mockito.when(pecaRepository.findPecaByDescricao("desc")).thenReturn(Optional.of(peca));
 
+        Mockito.when(pecaRepository.findById(anyLong())).thenReturn(Optional.of(peca));
 
         assertThrows((RuntimeException.class), () -> ordemService.adicionarServico(1L, servico));
 
@@ -311,14 +318,17 @@ class OrdemServiceTest {
         ordem.setServicos(new ArrayList<>());
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
+        ServicoCreateRequest servicoCreateRequest = new ServicoCreateRequest();
+        servicoCreateRequest.setQuantidade(1L);
+
         Servico servico = new Servico();
-        servico.setPeca(null);
-        servico.setQuantidade(1L);
+        servico.setId(1L);
+        servico.setNome("Nome");
 
         Mockito.when(ordemRepository.saveAndFlush(Mockito.any())).thenReturn(ordem);
         Mockito.when(servicoRepository.save(Mockito.any())).thenReturn(servico);
 
-        OrdemServico result = ordemService.adicionarServico(1L, servico);
+        OrdemServico result = ordemService.adicionarServico(1L, servicoCreateRequest);
 
         assertTrue(ordem.getServicos().contains(servico));
         assertEquals(ordem, result);

@@ -1,6 +1,8 @@
 package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.Cliente;
+import br.com.jlucaslopes.model.exception.ClienteJaExisteException;
+import br.com.jlucaslopes.model.exception.ClienteNaoEncontradoException;
 import br.com.jlucaslopes.repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 class ClienteServiceTest {
@@ -69,6 +72,13 @@ class ClienteServiceTest {
     void findClienteByDocumentoLancaExcecaoQuandoNaoExiste() {
         Mockito.when(clienteRepository.findClienteByDocumento("123")).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> clienteService.findClienteByDocumento("123"));
+        assertThrows(ClienteNaoEncontradoException.class, () -> clienteService.findClienteByDocumento("123"));
+    }
+
+    @Test
+    void salvarClienteJaExistenteRetornaException() {
+        Mockito.when(clienteRepository.findClienteByDocumento(anyString())).thenReturn(Optional.of(new Cliente()));
+        Cliente cliente = new Cliente("nome", "74148766084" );
+        assertThrows(ClienteJaExisteException.class, () -> clienteService.save(cliente));
     }
 }

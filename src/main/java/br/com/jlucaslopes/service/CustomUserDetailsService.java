@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -16,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         if (FIAP_USER.equals(username)) {
             return User.withUsername(FIAP_USER)
-                    .password(new BCryptPasswordEncoder().encode("1234"))
+                    .password(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString()))
                     .roles("USER")
                     .build();
         }

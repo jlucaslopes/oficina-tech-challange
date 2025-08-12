@@ -1,9 +1,7 @@
 package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.*;
-import br.com.jlucaslopes.model.exception.CancelarOrdemException;
-import br.com.jlucaslopes.model.exception.EstoqueInsuficienteException;
-import br.com.jlucaslopes.model.exception.OrdemStatusInvalidoAddServicoException;
+import br.com.jlucaslopes.model.exception.*;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.repository.ClienteRepository;
@@ -47,10 +45,10 @@ public class OrdemService {
     public OrdemServico criarOrdemServico(OrdemServicoCreateRequest request) {
 
         clienteRepository.findClienteByDocumento(request.getIdCliente())
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com o documento: " + request.getIdCliente()));
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente não encontrado com o documento: " + request.getIdCliente()));
 
         Veiculo veiculo = veiculoRepository.findByPlaca(request.getPlacaVeiculo())
-                .orElseThrow(() -> new IllegalArgumentException("Veiculo não encontrado com a placa: " + request.getPlacaVeiculo()));
+                .orElseThrow(() -> new VeiculoNaoEncontradoException("Veiculo não encontrado com a placa: " + request.getPlacaVeiculo()));
 
         OrdemServico ordemServico = new OrdemServico();
         ordemServico.setVeiculo(veiculo);
@@ -61,7 +59,7 @@ public class OrdemService {
 
     public OrdemServico buscarOrdemPorId(Long id) {
         return ordemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordem de serviço não encontrada com o ID: " + id));
+                .orElseThrow(() -> new OrdemNaoEncontradaException("Ordem de serviço não encontrada com o ID: " + id));
     }
 
     public OrdemServico adicionarServico(Long ordemId, ServicoCreateRequest servicoRequest) {
@@ -75,7 +73,7 @@ public class OrdemService {
         Peca peca = null;
         if(servicoRequest.getIdPeca() != null) {
             peca = pecaRepository.findById(servicoRequest.getIdPeca())
-                    .orElseThrow(() -> new IllegalArgumentException("Peça não encontrada: " + servicoRequest.getIdPeca()));
+                    .orElseThrow(() -> new PecaNaoEncontradaException("Peça não encontrada: " + servicoRequest.getIdPeca()));
             if(peca.getQuantidadeEstoque() < servicoRequest.getQuantidade())
                 throw new EstoqueInsuficienteException("Estoque insuficiente para a peça: " + peca.getDescricao());
 

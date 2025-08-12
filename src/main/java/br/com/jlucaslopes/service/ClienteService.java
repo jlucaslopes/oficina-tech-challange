@@ -1,6 +1,7 @@
 package br.com.jlucaslopes.service;
 
 
+import br.com.jlucaslopes.model.exception.ClienteNaoEncontradoException;
 import br.com.jlucaslopes.repository.ClienteRepository;
 import br.com.jlucaslopes.model.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class ClienteService {
     public Cliente save(Cliente cliente) {
         clienteRepository.findClienteByDocumento(cliente.getDocumento())
                 .ifPresent(existingCliente -> {
-                    throw new RuntimeException("Cliente com documento " + cliente.getDocumento() + " ja existe");
+                    throw new ClienteNaoEncontradoException("Cliente com documento " + cliente.getDocumento() + " ja existe");
                 });
         return clienteRepository.save(cliente);
     }
@@ -33,7 +34,7 @@ public class ClienteService {
 
     public Cliente findClienteByDocumento(String documento) {
         return clienteRepository.findClienteByDocumento(documento)
-                .orElseThrow(() -> new RuntimeException("Cliente nao encontrado com o documento: " + documento));
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente nao encontrado com o documento: " + documento));
     }
 
 }

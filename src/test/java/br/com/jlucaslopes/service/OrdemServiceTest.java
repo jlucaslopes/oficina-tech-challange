@@ -1,6 +1,10 @@
 package br.com.jlucaslopes.service;
 
 import br.com.jlucaslopes.model.*;
+import br.com.jlucaslopes.model.exception.ClienteNaoEncontradoException;
+import br.com.jlucaslopes.model.exception.OrdemNaoEncontradaException;
+import br.com.jlucaslopes.model.exception.PecaNaoEncontradaException;
+import br.com.jlucaslopes.model.exception.VeiculoNaoEncontradoException;
 import br.com.jlucaslopes.model.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.model.request.ServicoCreateRequest;
 import br.com.jlucaslopes.repository.*;
@@ -61,7 +65,7 @@ class OrdemServiceTest {
         request.setIdCliente("123");
         Mockito.when(clienteRepository.findClienteByDocumento("123")).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> ordemService.criarOrdemServico(request));
+        assertThrows(ClienteNaoEncontradoException.class, () -> ordemService.criarOrdemServico(request));
     }
 
     @Test
@@ -72,7 +76,7 @@ class OrdemServiceTest {
         Mockito.when(clienteRepository.findClienteByDocumento("123")).thenReturn(Optional.of(new Cliente()));
         Mockito.when(veiculoRepository.findByPlaca("ABC1234")).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> ordemService.criarOrdemServico(request));
+        assertThrows(VeiculoNaoEncontradoException.class, () -> ordemService.criarOrdemServico(request));
     }
 
     @Test
@@ -89,7 +93,7 @@ class OrdemServiceTest {
     void buscarOrdemPorIdLancaExcecaoQuandoNaoExiste() {
         Mockito.when(ordemRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> ordemService.buscarOrdemPorId(1L));
+        assertThrows(OrdemNaoEncontradaException.class, () -> ordemService.buscarOrdemPorId(1L));
     }
 
     @Test
@@ -237,7 +241,7 @@ class OrdemServiceTest {
 
         Mockito.when(pecaRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> ordemService.adicionarServico(1L, servico));
+        assertThrows(PecaNaoEncontradaException.class, () -> ordemService.adicionarServico(1L, servico));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package br.com.jlucaslopes.service;
 
 
+import br.com.jlucaslopes.model.exception.ClienteJaExisteException;
 import br.com.jlucaslopes.model.exception.ClienteNaoEncontradoException;
 import br.com.jlucaslopes.repository.ClienteRepository;
 import br.com.jlucaslopes.model.Cliente;
@@ -24,7 +25,7 @@ public class ClienteService {
     public Cliente save(Cliente cliente) {
         clienteRepository.findClienteByDocumento(cliente.getDocumento())
                 .ifPresent(existingCliente -> {
-                    throw new ClienteNaoEncontradoException("Cliente com documento " + cliente.getDocumento() + " ja existe");
+                    throw new ClienteJaExisteException("Cliente com documento " + cliente.getDocumento() + " ja existe");
                 });
         return clienteRepository.save(cliente);
     }

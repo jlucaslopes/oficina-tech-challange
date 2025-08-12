@@ -1,0 +1,527 @@
+type: collection.insomnia.rest/5.0
+name: My first collection
+meta:
+  id: wrk_baaaca538cb94bc7b9a4aa2ec88920d8
+  created: 1753836815113
+  modified: 1753836815113
+  description: ""
+collection:
+  - name: Login
+    meta:
+      id: fld_7055686ef3704293bb2dfdda9c1bdcd3
+      created: 1754882102894
+      modified: 1754883529551
+      sortKey: -1754883514956
+      description: ""
+    children:
+      - url: http://localhost:8080/login
+        name: Login
+        meta:
+          id: req_1fe8a21da3ad4d6eb6d85a5a24abef61
+          created: 1754882111262
+          modified: 1754883558562
+          isPrivate: false
+          description: ""
+          sortKey: -1754882111262
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "username": "fiap",
+              "password": "1234"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_7b4c92400de3468abbb10d29d736d6c0
+          - name: User-Agent
+            value: insomnia/11.3.0
+            id: pair_8a0d2dc64f8246b6a7ea6c8d11e7142f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Aplicacao
+    meta:
+      id: fld_7c63ff133738434c9de065ce0bd98924
+      created: 1754883514856
+      modified: 1754883561231
+      sortKey: -1754883514856
+      description: ""
+    children:
+      - name: Cliente
+        meta:
+          id: fld_43e78ec7c7724614ae72a279e8b7bdff
+          created: 1753836877494
+          modified: 1754883568588
+          sortKey: -1754883519331
+          description: ""
+        children:
+          - url: http://localhost:8080/cliente/
+            name: Cliente
+            meta:
+              id: req_02b15fc8a3a34c47bfbb7ff65abdf16c
+              created: 1753836815155
+              modified: 1754883596116
+              isPrivate: false
+              description: ""
+              sortKey: -1753836883572
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "nome": "João da Silva",
+                  "email": "joao.silva@email.com",
+                  "documento": "80122839056"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/cliente/1
+            name: Cliente by Id
+            meta:
+              id: req_56d7b24832104572aae232f529104c38
+              created: 1753836883472
+              modified: 1753836918884
+              isPrivate: false
+              description: ""
+              sortKey: -1753836883472
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/cliente/documento/80122839056
+            name: Cliente by documento
+            meta:
+              id: req_06d33adaad5e40d8add27daee756ef7e
+              created: 1753836928350
+              modified: 1754614931009
+              isPrivate: false
+              description: ""
+              sortKey: -1753836883422
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Veiculo
+        meta:
+          id: fld_ac275fee74d944408f021308c70ec85a
+          created: 1753837029370
+          modified: 1754883572192
+          sortKey: -1754883519431
+          description: ""
+        children:
+          - url: http://localhost:8080/veiculo
+            name: Veiculo
+            meta:
+              id: req_4d0d3e47ecaf4599bd256da631cc3011
+              created: 1753837032563
+              modified: 1754608382076
+              isPrivate: false
+              description: ""
+              sortKey: -1753837032563
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "placa": "ABC1234",
+                  "fabricante": "chevrolet",
+                  "modelo": "celta",
+                	"ano": "2025",
+                	"clienteDocumento": "80122839056"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/veiculo/1
+            name: Veiculo by id
+            meta:
+              id: req_8b1f575909c34a82a8555d62e0a5a0ad
+              created: 1753838850203
+              modified: 1753839009246
+              isPrivate: false
+              description: ""
+              sortKey: -1753838850203
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/veiculo/placa/ABC1234
+            name: Veiculo by placa
+            meta:
+              id: req_59b0f68c81b64a15bea774cd8cfe4365
+              created: 1753838989960
+              modified: 1754614988025
+              isPrivate: false
+              description: ""
+              sortKey: -1753837941383
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/veiculo/cliente/80122839056
+            name: Veiculo by documento
+            meta:
+              id: req_4e3ce27a1a1a40d2a4aecab037ed383d
+              created: 1753839101921
+              modified: 1754614943899
+              isPrivate: false
+              description: ""
+              sortKey: -1753839101921
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Peca
+        meta:
+          id: fld_163260cc30a54e22b96e1a9a935dcaff
+          created: 1753839590148
+          modified: 1754883522752
+          sortKey: -1754883519231
+          description: ""
+        children:
+          - url: http://localhost:8080/peca
+            name: Peça
+            meta:
+              id: req_24460f8f489f4d7bb844abf8bc64e283
+              created: 1753839594597
+              modified: 1754615121196
+              isPrivate: false
+              description: ""
+              sortKey: -1753839594597
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"descricao":"Pneu",
+                	"valorUnitario" : 200.00, 
+                	"quantidadeEstoque": 8
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/peca/2
+            name: Peça By Id
+            meta:
+              id: req_1b94c8bc6f5744259c85437ac6a12279
+              created: 1753839770216
+              modified: 1753840378729
+              isPrivate: false
+              description: ""
+              sortKey: -1753839348259
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/peca/10
+            name: Peça By Id
+            meta:
+              id: req_e8aef8768a444002a487df9871d3f69f
+              created: 1753839798135
+              modified: 1753839922129
+              isPrivate: false
+              description: ""
+              sortKey: -1753839225090
+            method: PUT
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"descricao":"Oleo 2L",
+                	"valorUnitario" : 1000.00, 
+                	"quantidadeEstoque": 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/peca/2/estoque
+            name: Atualiza Estoque
+            meta:
+              id: req_b281205e2e3e4503a6bcc3640d6ca6ba
+              created: 1753839938857
+              modified: 1753840588524
+              isPrivate: false
+              description: ""
+              sortKey: -1753839163505.5
+            method: PUT
+            body:
+              mimeType: application/json
+              text: ""
+            parameters:
+              - id: pair_d7ccef4de5074676a261e5fab1e673cf
+                name: quantidadeAdicionada
+                value: "-20"
+                description: ""
+                disabled: false
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.3.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Ordem
+        meta:
+          id: fld_74c266cfb1e6411aa34d2ec9134fb1a8
+          created: 1754596269829
+          modified: 1754883519151
+          sortKey: -1754883519131
+          description: ""
+        children:
+          - name: Servico
+            meta:
+              id: fld_c6401e6418b342fca89ef47e75e39dff
+              created: 1754596491567
+              modified: 1754883621007
+              sortKey: -1754596273798
+              description: ""
+            children:
+              - url: http://localhost:8080/ordens/1/servicos
+                name: Adiciona servico a uma ordem
+                meta:
+                  id: req_3c2e8a5366d24a84bfcc5aede8100b67
+                  created: 1754596367528
+                  modified: 1754883441601
+                  isPrivate: false
+                  description: ""
+                  sortKey: -1754596498092
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "Alinhamento",
+                    	"quantidade": 1,
+                    	"idPeca": 1
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{% response 'body', 'req_1fe8a21da3ad4d6eb6d85a5a24abef61',
+                    'b64::JC50b2tlbg==::46b', 'never', 60 %}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+          - url: http://localhost:8080/ordens
+            name: Criar Ordem
+            meta:
+              id: req_7876100cedc043e6bebc01c9c6173a1c
+              created: 1754596277510
+              modified: 1754615028651
+              isPrivate: false
+              description: ""
+              sortKey: -1754596392662
+            method: POST
+            body:
+              mimeType: application/json
+              text: '{"idCliente":"80122839056","placaVeiculo":"ABC1234","descricao":"Troca de
+                óleo"}'
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/ordens/1
+            name: Busca Ordem por id
+            meta:
+              id: req_266c197fcb274f37a1b63d00ec18260c
+              created: 1754596306865
+              modified: 1754615051934
+              isPrivate: false
+              description: ""
+              sortKey: -1754596392612
+            method: GET
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/ordens/2/avancar
+            name: Avancar Status
+            meta:
+              id: req_776b9d03617342419420a1b01004f8ed
+              created: 1754596395945
+              modified: 1754923871956
+              isPrivate: false
+              description: ""
+              sortKey: -1754596392462
+            method: POST
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/ordens/2/retornar
+            name: Retornar Status
+            meta:
+              id: req_2a2ee707baf64878b707d9829d88c147
+              created: 1754596423216
+              modified: 1754599042974
+              isPrivate: false
+              description: ""
+              sortKey: -1754596392562
+            method: POST
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/ordens/tempo-medio
+            name: Retorna Tempo Medio
+            meta:
+              id: req_fd8c28189f6f410da9f5898102d954c9
+              created: 1754596442239
+              modified: 1754596454255
+              isPrivate: false
+              description: ""
+              sortKey: -1754596273898
+            method: GET
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+    authentication:
+      type: bearer
+      token: "{% response 'body', 'req_1fe8a21da3ad4d6eb6d85a5a24abef61',
+        'b64::JC50b2tlbg==::46b', 'never', 60 %}"
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_fd3ef6815f9b74da7847a070f2a3b8fe8ae65ddb
+    created: 1753836815115
+    modified: 1753836815115
+environments:
+  name: Base Environment
+  meta:
+    id: env_fd3ef6815f9b74da7847a070f2a3b8fe8ae65ddb
+    created: 1753836815114
+    modified: 1753836815114
+    isPrivate: false

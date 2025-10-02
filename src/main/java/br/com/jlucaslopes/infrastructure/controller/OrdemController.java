@@ -28,7 +28,8 @@ public class OrdemController {
                            CancelarOrdemUseCase cancelarOrdemUseCase,
                            CriaOrdemServicoUseCase criaOrdemServicoUseCase,
                            RetornarStatusUseCase retornarStatusUseCase,
-                           RetornaTempoMedioUseCase retornaTempoMedioUseCase, ConsultarStatusUseCase consultarStatusUseCase) {
+                           RetornaTempoMedioUseCase retornaTempoMedioUseCase,
+                           ConsultarStatusUseCase consultarStatusUseCase) {
         this.adicionarServicoUseCase = adicionarServicoUseCase;
         this.avancarStatusUseCase = avancarStatusUseCase;
         this.buscarOrdemPorIdUseCase = buscarOrdemPorIdUseCase;

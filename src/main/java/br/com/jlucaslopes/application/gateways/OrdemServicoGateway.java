@@ -21,6 +21,6 @@ public interface OrdemServicoGateway {
 
     OrdemServico cancelarOrdem(Long id) ;
 
-    Status consultarStatus(Long id);
+    String consultarStatus(Long id);
 
 }

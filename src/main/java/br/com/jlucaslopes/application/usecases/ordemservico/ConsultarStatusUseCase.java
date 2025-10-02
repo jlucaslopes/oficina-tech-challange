@@ -11,7 +11,7 @@ public class ConsultarStatusUseCase {
         this.ordemServicoGateway = ordemServicoGateway;
     }
 
-    public Status consultarStatus(Long id) {
+    public String consultarStatus(Long id) {
         return this.ordemServicoGateway.consultarStatus(id);
     }
 }

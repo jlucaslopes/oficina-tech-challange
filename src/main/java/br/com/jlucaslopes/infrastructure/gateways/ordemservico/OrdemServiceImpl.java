@@ -152,9 +152,10 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         return OrdemServicoMapper.toOrdemServico(ordemSaved);    }
 
     @Override
-    public Status consultarStatus(Long id) {
+    public String consultarStatus(Long id) {
         return ordemServicoRepository.findById(id)
                 .map(OrdemServicoEntity::getStatus)
+                .map(Status::toString)
                 .orElseThrow(() -> new OrdemNaoEncontradaException("Ordem de serviço não encontrada com o ID: " + id));
     }
 }

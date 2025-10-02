@@ -150,4 +150,11 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         ordemServico.setDataFim(OffsetDateTime.now());
         OrdemServicoEntity ordemSaved = ordemServicoRepository.saveAndFlush(OrdemServicoMapper.toEntity(ordemServico));
         return OrdemServicoMapper.toOrdemServico(ordemSaved);    }
+
+    @Override
+    public Status consultarStatus(Long id) {
+        return ordemServicoRepository.findById(id)
+                .map(OrdemServicoEntity::getStatus)
+                .orElseThrow(() -> new OrdemNaoEncontradaException("Ordem de serviço não encontrada com o ID: " + id));
+    }
 }

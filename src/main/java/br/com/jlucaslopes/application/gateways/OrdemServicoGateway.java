@@ -3,6 +3,7 @@ package br.com.jlucaslopes.application.gateways;
 import br.com.jlucaslopes.domain.entities.OrdemServico;
 import br.com.jlucaslopes.domain.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.domain.request.ServicoCreateRequest;
+import br.com.jlucaslopes.infrastructure.persistence.ordemservico.Status;
 
 public interface OrdemServicoGateway {
 
@@ -19,5 +20,7 @@ public interface OrdemServicoGateway {
     String retornaTempoMedioDeOrdemServico();
 
     OrdemServico cancelarOrdem(Long id) ;
+
+    Status consultarStatus(Long id);
 
 }

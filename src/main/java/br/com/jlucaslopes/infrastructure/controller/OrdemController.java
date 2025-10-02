@@ -20,6 +20,7 @@ public class OrdemController {
     private final CriaOrdemServicoUseCase criaOrdemServicoUseCase;
     private final RetornarStatusUseCase retornarStatusUseCase;
     private final RetornaTempoMedioUseCase retornaTempoMedioUseCase;
+    private final ConsultarStatusUseCase consultarStatusUseCase;
 
     public OrdemController(AdicionarServicoUseCase adicionarServicoUseCase,
                            AvancarStatusUseCase avancarStatusUseCase,
@@ -27,7 +28,7 @@ public class OrdemController {
                            CancelarOrdemUseCase cancelarOrdemUseCase,
                            CriaOrdemServicoUseCase criaOrdemServicoUseCase,
                            RetornarStatusUseCase retornarStatusUseCase,
-                           RetornaTempoMedioUseCase retornaTempoMedioUseCase) {
+                           RetornaTempoMedioUseCase retornaTempoMedioUseCase, ConsultarStatusUseCase consultarStatusUseCase) {
         this.adicionarServicoUseCase = adicionarServicoUseCase;
         this.avancarStatusUseCase = avancarStatusUseCase;
         this.buscarOrdemPorIdUseCase = buscarOrdemPorIdUseCase;
@@ -35,6 +36,7 @@ public class OrdemController {
         this.criaOrdemServicoUseCase = criaOrdemServicoUseCase;
         this.retornarStatusUseCase = retornarStatusUseCase;
         this.retornaTempoMedioUseCase = retornaTempoMedioUseCase;
+        this.consultarStatusUseCase = consultarStatusUseCase;
     }
 
     @PostMapping
@@ -67,6 +69,11 @@ public class OrdemController {
         return retornarStatusUseCase.retornarStatus(id);
     }
 
+    @GetMapping("/{id}/status")
+    @Operation(summary = "Consultar status da ordem", description = "Retorna o status atual da ordem de serviço especificada pelo ID.")
+    public String consultarStatus(@PathVariable("id") Long id) {
+        return consultarStatusUseCase.consultarStatus(id);
+    }
 
     @PostMapping("/{id}/cancelar")
     @Operation(summary = "Cancelar ordem", description = "Cancela a ordem de serviço especificada pelo ID.")

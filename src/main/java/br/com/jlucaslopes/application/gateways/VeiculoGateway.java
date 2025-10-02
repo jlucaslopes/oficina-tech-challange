@@ -2,7 +2,7 @@ package br.com.jlucaslopes.application.gateways;
 
 
 import br.com.jlucaslopes.domain.entities.Veiculo;
-import br.com.jlucaslopes.domain.entities.request.VeiculoCreateRequest;
+import br.com.jlucaslopes.domain.request.VeiculoCreateRequest;
 
 import java.util.List;
 

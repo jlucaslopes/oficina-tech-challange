@@ -6,7 +6,7 @@ import br.com.jlucaslopes.domain.entities.Veiculo;
 import br.com.jlucaslopes.application.exceptions.ClienteNaoEncontradoException;
 import br.com.jlucaslopes.application.exceptions.VeiculoJaCadastradoException;
 import br.com.jlucaslopes.application.exceptions.VeiculoNaoEncontradoException;
-import br.com.jlucaslopes.domain.entities.request.VeiculoCreateRequest;
+import br.com.jlucaslopes.domain.request.VeiculoCreateRequest;
 import br.com.jlucaslopes.infrastructure.gateways.cliente.ClienteMapper;
 import br.com.jlucaslopes.infrastructure.persistence.cliente.ClienteRepository;
 import br.com.jlucaslopes.infrastructure.persistence.veiculo.VeiculoEntity;

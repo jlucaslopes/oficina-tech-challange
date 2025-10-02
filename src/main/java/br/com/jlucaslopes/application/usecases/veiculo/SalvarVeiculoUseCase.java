@@ -2,7 +2,7 @@ package br.com.jlucaslopes.application.usecases.veiculo;
 
 import br.com.jlucaslopes.application.gateways.VeiculoGateway;
 import br.com.jlucaslopes.domain.entities.Veiculo;
-import br.com.jlucaslopes.domain.entities.request.VeiculoCreateRequest;
+import br.com.jlucaslopes.domain.request.VeiculoCreateRequest;
 
 public class SalvarVeiculoUseCase {
     private final VeiculoGateway veiculoGateway;
@@ -12,6 +12,6 @@ public class SalvarVeiculoUseCase {
     }
 
     public Veiculo salvar(VeiculoCreateRequest request) {
-        this.veiculoGateway.salvar(request);
+        return this.veiculoGateway.salvar(request);
     }
 }

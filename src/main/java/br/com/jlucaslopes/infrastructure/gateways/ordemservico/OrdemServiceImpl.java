@@ -22,6 +22,7 @@ import br.com.jlucaslopes.infrastructure.persistence.servico.ServicoRepository;
 import br.com.jlucaslopes.infrastructure.persistence.veiculo.VeiculoRepository;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.OptionalDouble;
 
 public class OrdemServiceImpl implements OrdemServicoGateway{
@@ -48,6 +49,7 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         this.pecaServiceImpl = pecaServiceImpl;
     }
 
+    @Override
     public OrdemServico criarOrdemServico(OrdemServicoCreateRequest request) {
 
         clienteRepository.findClienteByDocumento(request.getIdCliente())
@@ -66,12 +68,14 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         return OrdemServicoMapper.toOrdemServico(ordemServicoEntity);
     }
 
+    @Override
     public OrdemServico buscarOrdemPorId(Long id) {
         return ordemServicoRepository.findById(id)
                 .map(OrdemServicoMapper::toOrdemServico)
                 .orElseThrow(() -> new OrdemNaoEncontradaException("Ordem de serviço não encontrada com o ID: " + id));
     }
 
+    @Override
     public OrdemServico adicionarServico(Long ordemId, ServicoCreateRequest servicoRequest) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
 
@@ -106,6 +110,7 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         return OrdemServicoMapper.toOrdemServico(entity);
     }
 
+    @Override
     public OrdemServico avancarStatus(Long ordemId) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
         ordemServico.setStatus(ordemServico.getStatus().avancar());
@@ -116,12 +121,27 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         return OrdemServicoMapper.toOrdemServico(ordemSaved);
     }
 
+    @Override
     public OrdemServico retornarStatus(Long ordemId) {
         OrdemServico ordemServico = buscarOrdemPorId(ordemId);
         ordemServico.setStatus(ordemServico.getStatus().retornar());
         OrdemServicoEntity ordemSaved = ordemServicoRepository.saveAndFlush(OrdemServicoMapper.toEntity(ordemServico));
-        return OrdemServicoMapper.toOrdemServico(ordemSaved);    }
+        return OrdemServicoMapper.toOrdemServico(ordemSaved);
+    }
 
+    @Override
+    public OrdemServico cancelarOrdem(Long id) {
+        OrdemServico ordemServico = buscarOrdemPorId(id);
+        if (ordemServico.getStatus() == Status.ENTREGUE || ordemServico.getStatus() == Status.CANCELADA || ordemServico.getStatus() == Status.FINALIZADA) {
+            throw new CancelarOrdemException("Ordem nao pode ser cancelada");
+        }
+        ordemServico.setStatus(Status.CANCELADA);
+        ordemServico.setDataFim(OffsetDateTime.now());
+        OrdemServicoEntity ordemSaved = ordemServicoRepository.saveAndFlush(OrdemServicoMapper.toEntity(ordemServico));
+        return OrdemServicoMapper.toOrdemServico(ordemSaved);
+    }
+
+    @Override
     public String retornaTempoMedioDeOrdemServico() {
 
         OptionalDouble average = ordemServicoRepository.findAllByStatus(Status.ENTREGUE)
@@ -141,16 +161,6 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
         return "Nenhuma ordem de serviço finalizada foi encontrada.";
     }
 
-    public OrdemServico cancelarOrdem(Long id) {
-        OrdemServico ordemServico = buscarOrdemPorId(id);
-        if (ordemServico.getStatus() == Status.ENTREGUE || ordemServico.getStatus() == Status.CANCELADA || ordemServico.getStatus() == Status.FINALIZADA) {
-            throw new CancelarOrdemException("Ordem nao pode ser cancelada");
-        }
-        ordemServico.setStatus(Status.CANCELADA);
-        ordemServico.setDataFim(OffsetDateTime.now());
-        OrdemServicoEntity ordemSaved = ordemServicoRepository.saveAndFlush(OrdemServicoMapper.toEntity(ordemServico));
-        return OrdemServicoMapper.toOrdemServico(ordemSaved);    }
-
     @Override
     public String consultarStatus(Long id) {
         return ordemServicoRepository.findById(id)
@@ -158,4 +168,28 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
                 .map(Status::toString)
                 .orElseThrow(() -> new OrdemNaoEncontradaException("Ordem de serviço não encontrada com o ID: " + id));
     }
+
+    @Override
+    public void aprovaOrcamento(Long id, boolean aprovado) {
+        OrdemServico ordemServico = buscarOrdemPorId(id);
+        if (ordemServico.getStatus() != Status.AGUARDANDO_APROVACAO) {
+            throw new OrdemStatusInvalidoAprovaOrcamentoException("Ordem de serviço não está aguardando aprovação de orçamento.");
+        }
+        if (aprovado) {
+            ordemServico.setStatus(Status.EM_EXECUCAO);
+        } else {
+            ordemServico.setStatus(Status.CANCELADA);
+            ordemServico.setDataFim(OffsetDateTime.now());
+        }
+        ordemServicoRepository.saveAndFlush(OrdemServicoMapper.toEntity(ordemServico));
+    }
+
+    @Override
+    public List<OrdemServico> listarOrdemServicos() {
+        return ordemServicoRepository.findAllForListagem(List.of(Status.FINALIZADA, Status.ENTREGUE))
+                .stream()
+                .map(OrdemServicoMapper::toOrdemServico)
+                .toList();
+    }
+
 }

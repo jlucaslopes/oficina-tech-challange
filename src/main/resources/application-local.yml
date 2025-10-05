@@ -3,12 +3,12 @@ spring:
     console:
       enabled: true
   datasource:
-#    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-    url: jdbc:postgresql://192.168.1.118:5432/oficina
-#    driver-class-name: org.h2.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+#    url: jdbc:postgresql://192.168.1.118:5432/oficina
+    driver-class-name: org.h2.Driver
     username: ${SPRING_DATASOURCE_USERNAME:usuario}
     password: ${SPRING_DATASOURCE_PASSWORD:senha}
-    driver-class-name: org.postgresql.Driver
+#    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop

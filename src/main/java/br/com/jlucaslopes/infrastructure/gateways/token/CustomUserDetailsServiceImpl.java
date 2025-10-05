@@ -17,8 +17,9 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         if (FIAP_USER.equals(username)) {
+            String encodedPassword = new BCryptPasswordEncoder().encode("1234");
             return User.withUsername(FIAP_USER)
-                    .password(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString()))
+                    .password(encodedPassword)
                     .roles("USER")
                     .build();
         }

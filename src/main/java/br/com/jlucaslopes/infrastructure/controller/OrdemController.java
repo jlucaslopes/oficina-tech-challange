@@ -1,12 +1,16 @@
 package br.com.jlucaslopes.infrastructure.controller;
 
+import br.com.jlucaslopes.application.usecases.ordemservico.AprovarOrcamentoUseCase;
 import br.com.jlucaslopes.application.usecases.ordemservico.*;
 import br.com.jlucaslopes.domain.entities.OrdemServico;
 import br.com.jlucaslopes.domain.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.domain.request.ServicoCreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/ordens")
@@ -21,6 +25,8 @@ public class OrdemController {
     private final RetornarStatusUseCase retornarStatusUseCase;
     private final RetornaTempoMedioUseCase retornaTempoMedioUseCase;
     private final ConsultarStatusUseCase consultarStatusUseCase;
+    private final AprovarOrcamentoUseCase aprovarOrcamentoUseCase;
+    private final ListarOrdensUseCase listarOrdensUseCase;
 
     public OrdemController(AdicionarServicoUseCase adicionarServicoUseCase,
                            AvancarStatusUseCase avancarStatusUseCase,
@@ -29,7 +35,9 @@ public class OrdemController {
                            CriaOrdemServicoUseCase criaOrdemServicoUseCase,
                            RetornarStatusUseCase retornarStatusUseCase,
                            RetornaTempoMedioUseCase retornaTempoMedioUseCase,
-                           ConsultarStatusUseCase consultarStatusUseCase) {
+                           ConsultarStatusUseCase consultarStatusUseCase,
+                           AprovarOrcamentoUseCase aprovarOrcamentoUseCase,
+                           ListarOrdensUseCase listarOrdensUseCase) {
         this.adicionarServicoUseCase = adicionarServicoUseCase;
         this.avancarStatusUseCase = avancarStatusUseCase;
         this.buscarOrdemPorIdUseCase = buscarOrdemPorIdUseCase;
@@ -38,6 +46,8 @@ public class OrdemController {
         this.retornarStatusUseCase = retornarStatusUseCase;
         this.retornaTempoMedioUseCase = retornaTempoMedioUseCase;
         this.consultarStatusUseCase = consultarStatusUseCase;
+        this.aprovarOrcamentoUseCase = aprovarOrcamentoUseCase;
+        this.listarOrdensUseCase = listarOrdensUseCase;
     }
 
     @PostMapping
@@ -50,6 +60,12 @@ public class OrdemController {
     @Operation(summary = "Busca ordem por id", description = "Retornar os dados da ordem de serviço correspondente ao ID informado.")
     public OrdemServico buscarPorId(@PathVariable("id") Long id) {
         return buscarOrdemPorIdUseCase.buscarOrdemPorId(id);
+    }
+
+    @GetMapping("/ordens")
+    @Operation(summary = "Lista de ordens", description = "Retorna uma lista de todas as ordens de serviço.")
+    public List<OrdemServico> listarOrdens() {
+        return listarOrdensUseCase.listarOrdensDeServico();
     }
 
     @PostMapping("/{id}/servicos")
@@ -87,4 +103,12 @@ public class OrdemController {
     public String tempoMedio() {
         return retornaTempoMedioUseCase.retornaTempoMedioDeOrdemServico();
     }
+
+    @PostMapping("{id}/orcamento")
+    @Operation(summary = "Aprovar/recusar orçamento da ordem", description = "Aprovar/recusar o orçamento da ordem de serviço especificada pelo ID.")
+    public ResponseEntity<Object> aprovarOrcamento(@PathVariable Long id, @RequestParam("aprovado") boolean aprovado) {
+        aprovarOrcamentoUseCase.aprovarOrcamento(id, aprovado);
+        return ResponseEntity.noContent().build();
+    }
+
 }

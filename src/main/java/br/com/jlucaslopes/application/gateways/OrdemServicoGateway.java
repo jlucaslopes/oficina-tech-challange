@@ -5,6 +5,8 @@ import br.com.jlucaslopes.domain.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.domain.request.ServicoCreateRequest;
 import br.com.jlucaslopes.infrastructure.persistence.ordemservico.Status;
 
+import java.util.List;
+
 public interface OrdemServicoGateway {
 
     OrdemServico criarOrdemServico(OrdemServicoCreateRequest request);
@@ -23,4 +25,7 @@ public interface OrdemServicoGateway {
 
     String consultarStatus(Long id);
 
+    void aprovaOrcamento(Long id, boolean aprovado);
+
+    List<OrdemServico> listarOrdemServicos();
 }

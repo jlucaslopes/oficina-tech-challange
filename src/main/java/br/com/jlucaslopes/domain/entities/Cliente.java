@@ -10,6 +10,9 @@ public class Cliente {
     private String nome;
 
 
+    public Cliente() {
+    }
+
     public Cliente(String documento, String nome) {
         this.documento = documento;
         this.nome = nome;

@@ -32,10 +32,24 @@ jobs:
   create-pr:
     needs: build-test-install
     runs-on: ubuntu-latest
-
     steps:
+      - name: Verificar se há PR existente
+        id: check_pr
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${{ github.ref_name }}&base=develop&state=open
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+
+      - name: Definir flag de PR aberto
+        id: set_flag
+        run: |
+          PR_COUNT=$(echo '${{ steps.check_pr.outputs.data }}' | jq length)
+          echo "HAS_OPEN_PR=$PR_COUNT" >> $GITHUB_ENV
+          echo "Número de PRs abertos: $PR_COUNT"
+
       - name: Criar Pull Request manualmente via API
-        if: ${{ fromJson(steps.check_pr.outputs.data) == null || length(fromJson(steps.check_pr.outputs.data)) == 0 }}
+        if: env.HAS_OPEN_PR == '0'
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
           HEAD_BRANCH: ${{ github.ref_name }}

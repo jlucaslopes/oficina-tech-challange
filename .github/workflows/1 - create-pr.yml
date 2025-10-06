@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Criar Pull Request manualmente via API
-        if: ${{ steps.check_pr.outputs.data == '[]' }}
+#        if: ${{ steps.check_pr.outputs.data == '[]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ github.ref_name }}

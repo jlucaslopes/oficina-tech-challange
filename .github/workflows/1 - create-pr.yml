@@ -35,9 +35,9 @@ jobs:
 
     steps:
       - name: Criar Pull Request manualmente via API
-#        if: ${{ steps.check_pr.outputs.data == '[]' }}
+        if: ${{ steps.check_pr.outputs.data == '[]' }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
           HEAD_BRANCH: ${{ github.ref_name }}
           BASE_BRANCH: develop
           REPO: ${{ github.repository }}
@@ -48,16 +48,13 @@ jobs:
           BODY="Pull request automático criado a partir da branch **${HEAD_BRANCH}**.  
           - Build e testes executados com sucesso ✅"
 
-          # Faz a requisição POST para criar o PR
           RESPONSE=$(curl -s -X POST -H "Authorization: token ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             ${API_URL} \
             -d "$(jq -n --arg title "$TITLE" --arg head "$HEAD_BRANCH" --arg base "$BASE_BRANCH" --arg body "$BODY" \
             '{title: $title, head: $head, base: $base, body: $body}')")
 
-          # Extrai a URL do PR da resposta e imprime no log
           PR_URL=$(echo "$RESPONSE" | jq -r '.html_url')
-
           if [ "$PR_URL" = "null" ] || [ -z "$PR_URL" ]; then
             echo "❌ Falha ao criar o Pull Request"
             echo "$RESPONSE"

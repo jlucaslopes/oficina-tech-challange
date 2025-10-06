@@ -3,7 +3,7 @@ name: Build & PR for feature branches
 on:
   push:
     branches:
-      - 'feat/**'
+      - 'feat**'
 permissions:
   contents: write
   pull-requests: write

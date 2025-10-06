@@ -1,4 +1,4 @@
-name: Build & PR for feature branches
+name: 1 - create-pr.yml
 
 on:
   push:

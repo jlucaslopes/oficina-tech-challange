@@ -49,7 +49,7 @@ jobs:
           echo "Número de PRs abertos: $PR_COUNT"
 
       - name: Criar Pull Request manualmente via API
-        if: env.HAS_OPEN_PR == '0'
+#        if: env.HAS_OPEN_PR == '0'
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
           HEAD_BRANCH: ${{ github.ref_name }}

@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+<configuration default="false" name="OficinaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+<envs>
+<env name="SPRING_DATASOURCE_PASSWORD" value="senha"/>
+<env name="SPRING_DATASOURCE_URL" value="jdbc:postgresql://localhost:5432/oficina"/>
+<env name="SPRING_DATASOURCE_USERNAME" value="usuario"/>
+</envs>
+<module name="oficina"/>
+<option name="SPRING_BOOT_MAIN_CLASS" value="br.com.jlucaslopes.OficinaApplication"/>
+<method v="2">
+<option name="Make" enabled="true"/>
+</method>
+</configuration>
+</component>

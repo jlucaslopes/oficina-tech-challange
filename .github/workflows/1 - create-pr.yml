@@ -47,25 +47,28 @@ jobs:
         run: terraform plan -no-color
 
   create-pr:
-    name: Create Pull Request to develop
+    name: Create or Update Pull Request to develop
     runs-on: ubuntu-latest
     needs: terraform-plan
     permissions:
       contents: write
       pull-requests: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create Pull Request to develop
+      - name: Create or update PR
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: develop
-          title: "Merge feature branch `${{ github.ref_name }}` into develop"
+          head: ${{ github.ref_name }}    # branch feature
+          title: "Feature: ${{ github.ref_name }} → develop"
           body: |
-            🚀 This PR was automatically created after successful build, test and terraform plan.
+            🚀 Pull request criado automaticamente após build, test e terraform plan bem-sucedidos.
             - Branch: `${{ github.ref_name }}`
             - Triggered by: `${{ github.actor }}`
-          branch: ${{ github.ref_name }}
           draft: false
+          delete-branch: false
+          branch-suffix: ""

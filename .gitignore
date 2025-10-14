@@ -38,3 +38,10 @@ build/
 .DS_Store
 
 .idea/*
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+*.tfplan

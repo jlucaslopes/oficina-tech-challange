@@ -26,8 +26,16 @@ public class OrdemServicoEntity {
     private List<ServicoEntity> servicos;
 
     public OrdemServicoEntity() {
-        this.status = Status.RECEBIDA;
-        this.dataInicio = OffsetDateTime.now();
+    }
+
+    @PrePersist
+    private void prePersist() {
+        if (status == null) {
+            status = Status.RECEBIDA;
+        }
+        if (dataInicio == null) {
+            dataInicio = OffsetDateTime.now();
+        }
     }
 
     public OrdemServicoEntity(Long id, String descricao, OffsetDateTime dataInicio, OffsetDateTime dataFim, Status status, VeiculoEntity veiculo, List<ServicoEntity> servicos) {
@@ -38,14 +46,6 @@ public class OrdemServicoEntity {
         this.status = status;
         this.veiculo = veiculo;
         this.servicos = servicos;
-    }
-
-    public VeiculoEntity getVeiculo() {
-        return veiculo;
-    }
-
-    public void setVeiculo(VeiculoEntity veiculo) {
-        this.veiculo = veiculo;
     }
 
     public Long getId() {
@@ -68,6 +68,10 @@ public class OrdemServicoEntity {
         return dataInicio;
     }
 
+    public void setDataInicio(OffsetDateTime dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
     public OffsetDateTime getDataFim() {
         return dataFim;
     }
@@ -82,6 +86,14 @@ public class OrdemServicoEntity {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public VeiculoEntity getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(VeiculoEntity veiculo) {
+        this.veiculo = veiculo;
     }
 
     public List<ServicoEntity> getServicos() {

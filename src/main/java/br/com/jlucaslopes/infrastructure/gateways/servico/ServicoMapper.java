@@ -6,10 +6,8 @@ import br.com.jlucaslopes.infrastructure.gateways.ordemservico.OrdemServicoMappe
 import br.com.jlucaslopes.infrastructure.gateways.peca.PecaMapper;
 import br.com.jlucaslopes.infrastructure.persistence.servico.ServicoEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class ServicoMapper {
@@ -20,8 +18,8 @@ public class ServicoMapper {
                 entity.getNome(),
                 entity.getQuantidade(),
                 entity.getPreco(),
-                OrdemServicoMapper.toOrdemServico(entity.getOrdemServico()),
-                PecaMapper.toPeca(entity.getPeca())
+                (entity.getOrdemServico() != null ? OrdemServicoMapper.toOrdemServico(entity.getOrdemServico()) : null),
+                (entity.getPeca() != null ? PecaMapper.toPeca(entity.getPeca()) : null)
         );
     }
 
@@ -32,19 +30,20 @@ public class ServicoMapper {
     }
 
     public static ServicoEntity toEntity(Servico servico) {
-        return new ServicoEntity(
-                servico.getId(),
-                servico.getNome(),
-                servico.getQuantidade(),
-                servico.getPreco(),
-                OrdemServicoMapper.toEntity(servico.getOrdemServico()),
-                PecaMapper.toEntity(servico.getPeca())
-        );
+    return new ServicoEntity(
+        servico.getId(),
+        servico.getNome(),
+        servico.getQuantidade(),
+        servico.getPreco(),
+        servico.getOrdemServico() != null ? OrdemServicoMapper.toEntity(servico.getOrdemServico()) : null,
+        servico.getPeca() != null ? PecaMapper.toEntity(servico.getPeca()) : null
+    );
     }
 
     public static List<ServicoEntity> toEntityList(List<Servico> servicos) {
-        return servicos.stream()
-                .map(ServicoMapper::toEntity)
-                .collect(Collectors.toList());
+    if (servicos == null) return List.of();
+    return servicos.stream()
+        .map(ServicoMapper::toEntity)
+        .collect(Collectors.toList());
     }
 }

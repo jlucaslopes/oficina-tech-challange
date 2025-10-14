@@ -1,29 +1,28 @@
-name: CI Feature Branch
-
+name: 2 - Open PR to master.yml
 on:
   push:
     branches:
-      - "feat**"
-      - "feature/**"
-
+      - 'develop'
 jobs:
   build-test:
-    name: Build & Test (Maven + Java 21)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Configurar JDK
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 21
+          java-version: '21'
+          distribution: 'temurin'
           cache: maven
 
-      - name: Build and run tests
-        run: mvn clean install --batch-mode -DskipTests=false
+      - name: Executar mvn test
+        run: mvn test --batch-mode
+
+      - name: Executar mvn install
+        run: mvn install --batch-mode -DskipTests=true
 
   terraform-plan:
     name: Terraform Plan
@@ -67,7 +66,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq gh
 
-      - name: Criar ou usar branch de develop e abrir PR se necessário
+      - name: Criar ou usar branch e abrir PR se necessário
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -80,32 +79,32 @@ jobs:
           echo "📦 Alternando para feature atual para criar o PR..."
           git checkout "${{ github.ref_name }}"
 
-          echo "🔍 Preparando branch 'develop' local para comparação..."
-          # Trazer a ref remota develop para uma branch local 'develop' (força atualização)
-          git fetch origin develop:develop || true
+          echo "🔍 Preparando branch 'master' local para comparação..."
+          # Trazer a ref remota master para uma branch local 'master' (força atualização)
+          git fetch origin master:master || true
 
-          # Se não existir a branch local 'develop', criá-la a partir de origin/develop
-          if ! git show-ref --verify --quiet refs/heads/develop; then
-            git branch --force develop origin/develop || true
+          # Se não existir a branch local 'master', criá-la a partir de origin/master
+          if ! git show-ref --verify --quiet refs/heads/master; then
+            git branch --force master origin/master || true
           fi
 
           echo "🔍 Verificando se há diferenças entre as branches..."
-          if git diff --quiet develop..."${{ github.ref_name }}"; then
-            echo "⚠️ Nenhuma diferença entre a feature e a develop. Nenhum PR será criado."
+          if git diff --quiet master..."${{ github.ref_name }}"; then
+            echo "⚠️ Nenhuma diferença entre a feature e a master. Nenhum PR será criado."
             exit 0
           fi
 
           echo "🔍 Verificando PRs abertos..."
           # tornar resiliente caso GH falhe: retornar 0 por padrão
-          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "develop" --json number 2>/dev/null | jq 'length' 2>/dev/null || echo 0)
+          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "master" --json number 2>/dev/null | jq 'length' 2>/dev/null || echo 0)
 
           if [ "${OPEN_PR_COUNT:-0}" -eq "0" ]; then
             echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
             gh pr create \
-              --base "develop" \
+              --base "master" \
               --head "${{ github.ref_name }}" \
-              --title "${{ github.ref_name }} -> develop" \
+              --title "${{ github.ref_name }} -> master" \
               --body "Pull Request gerado automaticamente. Revise as alterações."
           else
-            echo "ℹ️ Já existe PR aberto para develop."
+            echo "ℹ️ Já existe PR aberto para master."
           fi

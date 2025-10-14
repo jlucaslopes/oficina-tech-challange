@@ -59,4 +59,10 @@ public class ClienteEntity {
         this.nome = nome;
         this.documento = documento;
     }
+
+    public ClienteEntity(Long id, String documento, String nome) {
+        this.id = id;
+        this.documento = documento;
+        this.nome = nome;
+    }
 }

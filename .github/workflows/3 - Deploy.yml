@@ -71,3 +71,35 @@ jobs:
         run: |
           terraform init
           terraform apply -auto-approve
+
+      # --- MOSTRAR RECURSOS CRIADOS ---
+      - name: Show created Kubernetes resources
+        env:
+          KUBECONFIG: ${{ env.KUBECONFIG }}
+        run: |
+          echo "::group::Kubernetes resources summary"
+          echo "Namespaces:"
+          kubectl get namespaces || true
+          echo "\nAll resources (wide):"
+          kubectl get all --show-labels -o wide || true
+          echo "\nDeployments:"
+          kubectl get deployments -o wide || true
+          echo "\nServices:"
+          kubectl get svc -o wide || true
+          echo "\nHorizontalPodAutoscalers:"
+          kubectl get hpa || true
+          echo "\nConfigMaps:"
+          kubectl get configmap || true
+          echo "\nSecrets (names only):"
+          kubectl get secrets -o custom-columns=NAME:.metadata.name || true
+          echo "\nPods count: $(kubectl get pods --no-headers 2>/dev/null | wc -l || echo 0)"
+          echo "::endgroup::"
+
+          # Save full resources YAML for debugging / download
+          kubectl get all -o yaml > resources.yaml || true
+
+      - name: Upload Kubernetes resources artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: k8s-resources
+          path: resources.yaml

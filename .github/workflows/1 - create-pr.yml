@@ -3,7 +3,7 @@ name: CI Feature Branch
 on:
   push:
     branches:
-      - "feat/**"
+      - "feat**"
 
 jobs:
   build-test:

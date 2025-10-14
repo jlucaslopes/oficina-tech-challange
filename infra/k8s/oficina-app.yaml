@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: oficina-app
-        image: jlucaslopes/oficina:0.1.1
+        image: jlucaslopes/oficina:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

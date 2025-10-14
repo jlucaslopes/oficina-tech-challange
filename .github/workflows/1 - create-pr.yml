@@ -47,7 +47,7 @@ jobs:
         run: terraform plan -no-color
 
   create-pr:
-    name: Create or Update Pull Request (no marketplace)
+    name: Create or Update Pull Request
     runs-on: ubuntu-latest
     needs: terraform-plan
     permissions:
@@ -55,59 +55,49 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout do código completo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Extract branch info
-        id: vars
+      - name: Instalar dependências CLI
         run: |
-          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-          echo "REPO=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
-          echo "BASE_BRANCH=develop" >> $GITHUB_ENV
+          sudo apt-get update
+          sudo apt-get install -y jq gh
 
-      - name: Check if PR already exists
-        id: check_pr
+      - name: Criar ou usar branch de release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          echo "🔍 Checking if PR already exists for ${BRANCH_NAME}..."
-          API_URL="https://api.github.com/repos/${REPO}/pulls?head=${REPO}:${BRANCH_NAME}&base=${BASE_BRANCH}"
-          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL")
-          COUNT=$(echo "$RESPONSE" | jq 'length')
-          echo "PR_COUNT=$COUNT" >> $GITHUB_ENV
-
-      - name: Create PR if not exists
-        if: env.PR_COUNT == '0'
-        run: |
-          echo "🆕 Creating Pull Request from ${BRANCH_NAME} to ${BASE_BRANCH}"
-          BODY=$(cat <<EOF
-  🚀 Pull request criado automaticamente após build, test e terraform plan bem-sucedidos.
-
-- Branch: ${BRANCH_NAME}
-- Autor: @${GITHUB_ACTOR}
-  EOF
-  )
-  API_URL="https://api.github.com/repos/${REPO}/pulls"
-  DATA=$(jq -n \
---arg title "Feature: ${BRANCH_NAME} → ${BASE_BRANCH}" \
-  --arg head "${BRANCH_NAME}" \
-  --arg base "${BASE_BRANCH}" \
-  --arg body "$BODY" \
-  '{title: $title, head: $head, base: $base, body: $body, draft: false}')
-curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-  -H "Accept: application/vnd.github+json" \
-  -d "$DATA" "$API_URL"
-
-- name: Update existing PR (optional comment)
-  if: env.PR_COUNT != '0'
-  run: |
-    echo "📝 PR already exists. Adding comment with new plan result."
-    PLAN=$(cat infra/plan.txt | head -n 30) # resumo
-    PR_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-      "https://api.github.com/repos/${REPO}/pulls?head=${REPO}:${BRANCH_NAME}&base=${BASE_BRANCH}" | jq -r '.[0].number')
-    
-    COMMENT_BODY=$(jq -n --arg body "📦 Terraform plan result:\n\n\`\`\`\n${PLAN}\n\`\`\`" '{body: $body}')
-    curl -s -X POST \
-      -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-      -H "Accept: application/vnd.github+json" \
-      -d "$COMMENT_BODY" \
-      "https://api.github.com/repos/${REPO}/issues/${PR_ID}/comments"
-
+          set -e
+          
+          echo "🔄 Atualizando informações do remoto..."
+          git remote set-url origin https://github.com/${{ github.repository }}.git
+          git fetch origin --prune --tags
+          
+          echo "📦 Alternando para feature atual para criar o PR..."
+          git checkout "${{ github.ref_name }}"
+          
+          echo "🔍 Verificando se há diferenças entre as branches..."
+          # We need to fetch the existing develop branch to be able to diff against it
+          git fetch origin "develop":"develop"
+          
+          if git diff --quiet "origin/develop"...origin/${{ github.ref_name }}; then
+            echo "⚠️ Nenhuma diferença entre a feature e a develop. Nenhum PR será criado."
+            exit 0
+          fi
+          
+          echo "🔍 Verificando PRs abertos..."
+          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "develop" --json number | jq 'length')
+          
+          if [ "$OPEN_PR_COUNT" -eq "0" ]; then
+            echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
+            gh pr create \
+              --base "develop" \
+              --head "${{ github.ref_name }}" \
+              --title "${{ github.ref_name }} -> develop" \
+              --body "Pull Request gerado automaticamente. Revise as alterações."
+          else
+            echo "ℹ️ Já existe PR aberto para develop."
+          fi

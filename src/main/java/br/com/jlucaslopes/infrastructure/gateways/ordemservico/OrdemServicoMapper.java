@@ -1,6 +1,7 @@
 package br.com.jlucaslopes.infrastructure.gateways.ordemservico;
 
 import br.com.jlucaslopes.domain.entities.OrdemServico;
+import java.util.List;
 import br.com.jlucaslopes.infrastructure.gateways.servico.ServicoMapper;
 import br.com.jlucaslopes.infrastructure.gateways.veiculo.VeiculoMapper;
 import br.com.jlucaslopes.infrastructure.persistence.ordemservico.OrdemServicoEntity;
@@ -20,14 +21,14 @@ public class OrdemServicoMapper {
     }
 
     public static OrdemServicoEntity toEntity(OrdemServico ordemServico) {
-        return new OrdemServicoEntity(
-                ordemServico.getId(),
-                ordemServico.getDescricao(),
-                ordemServico.getDataInicio(),
-                ordemServico.getDataFim(),
-                ordemServico.getStatus(),
-                VeiculoMapper.toVeiculoEntity(ordemServico.getVeiculo()),
-                ServicoMapper.toEntityList(ordemServico.getServicos())
-        );
+    return new OrdemServicoEntity(
+        ordemServico.getId(),
+        ordemServico.getDescricao(),
+        ordemServico.getDataInicio(),
+        ordemServico.getDataFim(),
+        ordemServico.getStatus(),
+        VeiculoMapper.toVeiculoEntity(ordemServico.getVeiculo()),
+        ordemServico.getServicos() != null ? ServicoMapper.toEntityList(ordemServico.getServicos()) : List.of()
+    );
     }
 }

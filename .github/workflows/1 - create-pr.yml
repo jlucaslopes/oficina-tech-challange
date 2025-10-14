@@ -1,61 +1,104 @@
 name: Build & PR for feature branches
+name: Build & PR for feature branches
+
+name: Build & PR for feature branches
 
 on:
   push:
     branches:
-      - 'feat**'
+      - 'feature/**'
+      - 'feat/**'
 
 jobs:
-  build-test-install:
-    runs-on: ubuntu-latest
+  name: Build & PR for feature branches
 
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
+  on:
+    push:
+      branches:
+        - 'feature/**'
+        - 'feat/**'
 
-      - name: Configurar JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
+  jobs:
+    build-test-install:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout código
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
 
-      - name: Executar mvn test
-        run: mvn test --batch-mode
+        - name: Configurar JDK
+          uses: actions/setup-java@v4
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+            cache: maven
 
-      - name: Executar mvn install
-        run: mvn install --batch-mode -DskipTests=true
+        - name: Executar mvn test
+          run: mvn test --batch-mode
 
-  create-pr:
-    needs: build-test-install
-    runs-on: ubuntu-latest
+        - name: Executar mvn install
+          run: mvn install --batch-mode -DskipTests=true
 
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
+    create-pr:
+      needs: build-test-install
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout código
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
 
-      - name: Verificar se já existe PR aberto
-        id: check_pr
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${{ github.ref_name }}&base=develop&state=open
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Verificar se já existe PR aberto
+          id: check_pr
+          uses: octokit/request-action@v2.x
+          with:
+            route: GET /repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${{ github.ref_name }}&base=develop&state=open
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Criar Pull Request automaticamente
-        if: ${{ steps.check_pr.outputs.data == '[]' }}
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'Automated build successful – creating PR to develop'
-          title: 'Feature → Develop: ${{ github.ref_name }}'
-          body: |
-            Pull request automático criado a partir da branch `${{ github.ref_name }}`.
-            - Build e testes executados com sucesso ✅
-          base: develop
-          branch: ${{ github.ref_name }}
-          draft: false
+        - name: Criar Pull Request automaticamente
+          if: ${{ steps.check_pr.outputs.data == '[]' }}
+          uses: octokit/request-action@v2.x
+          with:
+            route: POST /repos/${{ github.repository }}/pulls
+            data: |
+              {"title":"Feature → Develop: ${{ github.ref_name }}","head":"${{ github.ref_name }}","base":"develop","body":"Pull request automático criado a partir da branch ${{ github.ref_name }}.\n- Build e testes executados com sucesso ✅"}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Logar caso PR já exista
-        if: ${{ steps.check_pr.outputs.data != '[]' }}
-        run: echo "Já existe um PR aberto de ${{ github.ref_name }} para develop. Nenhum novo PR foi criado."
+        - name: Logar caso PR já exista
+          if: ${{ steps.check_pr.outputs.data != '[]' }}
+          run: echo "Já existe um PR aberto de ${{ github.ref_name }} para develop. Nenhum novo PR foi criado."
+          if: ${{ steps.check_pr.outputs.data != '[]' }}
+          run: echo "Já existe um PR aberto de ${{ github.ref_name }} para develop. Nenhum novo PR foi criado."
+
+              steps:
+                - name: Checkout código
+                  uses: actions/checkout@v4
+                  with:
+                    fetch-depth: 0
+                    ref: ${{ github.ref }}
+
+                - name: Verificar se já existe PR aberto
+                  id: check_pr
+                  uses: octokit/request-action@v2.x
+                  with:
+                    route: GET /repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${{ github.ref_name }}&base=develop&state=open
+                  env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+                - name: Criar Pull Request automaticamente
+                  if: ${{ steps.check_pr.outputs.data == '[]' }}
+                  uses: octokit/request-action@v2.x
+                  with:
+                    route: POST /repos/${{ github.repository }}/pulls
+                    # pass PR payload as JSON in data
+                    data: |
+                      {"title":"Automated: Feature → Develop: ${{ github.ref_name }}","head":"${{ github.ref_name }}","base":"develop","body":"Pull request automático criado a partir da branch ${{ github.ref_name }}.\n- Build e testes executados com sucesso ✅"}
+                  env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+                - name: Logar caso PR já exista
+                  if: ${{ steps.check_pr.outputs.data != '[]' }}
+                  run: echo "Já existe um PR aberto de ${{ github.ref_name }} para develop. Nenhum novo PR foi criado."

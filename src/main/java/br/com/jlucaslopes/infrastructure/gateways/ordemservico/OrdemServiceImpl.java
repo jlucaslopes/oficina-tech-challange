@@ -9,7 +9,7 @@ import br.com.jlucaslopes.domain.entities.Veiculo;
 import br.com.jlucaslopes.domain.request.OrdemServicoCreateRequest;
 import br.com.jlucaslopes.domain.request.ServicoCreateRequest;
 import br.com.jlucaslopes.infrastructure.gateways.peca.PecaMapper;
-import br.com.jlucaslopes.infrastructure.gateways.peca.PecaServiceImpl;
+import br.com.jlucaslopes.application.gateways.PecaGateway;
 import br.com.jlucaslopes.infrastructure.gateways.servico.ServicoMapper;
 import br.com.jlucaslopes.infrastructure.gateways.veiculo.VeiculoMapper;
 import br.com.jlucaslopes.infrastructure.persistence.cliente.ClienteRepository;
@@ -32,7 +32,7 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
     private final OrdemServicoRepository ordemServicoRepository;
     private final ServicoRepository servicoRepository;
     private final PecaRepository pecaRepository;
-    private final PecaServiceImpl pecaServiceImpl;
+    private final PecaGateway pecaServiceImpl;
 
 
     public OrdemServiceImpl(ClienteRepository clienteRepository,
@@ -40,7 +40,7 @@ public class OrdemServiceImpl implements OrdemServicoGateway{
                             OrdemServicoRepository ordemServicoRepository,
                             ServicoRepository servicoRepository,
                             PecaRepository pecaRepository,
-                            PecaServiceImpl pecaServiceImpl) {
+                            PecaGateway pecaServiceImpl) {
         this.clienteRepository = clienteRepository;
         this.veiculoRepository = veiculoRepository;
         this.ordemServicoRepository = ordemServicoRepository;

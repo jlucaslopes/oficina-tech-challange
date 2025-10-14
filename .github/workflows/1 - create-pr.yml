@@ -30,7 +30,7 @@ jobs:
     needs: build-test
     defaults:
       run:
-        working-directory: infra  # ajuste o path do seu código Terraform se necessário
+        working-directory: infra/terraform
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

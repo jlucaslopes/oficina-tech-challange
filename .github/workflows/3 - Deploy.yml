@@ -36,7 +36,7 @@ jobs:
       - name: Install Minikube
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y curl conntrack
+          sudo apt-get install -y curl conntrack kubectl
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           sudo install minikube /usr/local/bin/
           minikube start --driver=docker --kubernetes-version=v1.31.0
@@ -54,9 +54,14 @@ jobs:
       # --- CONFIGURAÇÃO KUBECONFIG PARA TERRAFORM ---
       - name: Export kubeconfig to Terraform
         run: |
-          mkdir -p ~/.kube
-          minikube kubeconfig > ~/.kube/config
-          echo "KUBECONFIG=$(minikube kubeconfig)" >> $GITHUB_ENV
+          # minikube writes kubeconfig to the default location ($HOME/.kube/config)
+          # Older/newer minikube versions may not provide a `kubeconfig` subcommand.
+          mkdir -p $HOME/.kube
+          # If for some reason the file isn't present, try to get it from kubectl (minikube should have configured it)
+          if [ ! -f "$HOME/.kube/config" ]; then
+            kubectl config view --raw > $HOME/.kube/config || true
+          fi
+          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
       # --- EXECUÇÃO DO TERRAFORM ---
       - name: Terraform Init & Apply

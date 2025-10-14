@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "feat**"
+      - "feature/**"
 
 jobs:
   build-test:
@@ -66,32 +67,39 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq gh
 
-      - name: Criar ou usar branch de release
+      - name: Criar ou usar branch de develop e abrir PR se necessário
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -e
-          
+          set -eo pipefail
+
           echo "🔄 Atualizando informações do remoto..."
           git remote set-url origin https://github.com/${{ github.repository }}.git
-          git fetch origin --prune --tags
-          
+          git fetch origin --prune --no-tags
+
           echo "📦 Alternando para feature atual para criar o PR..."
           git checkout "${{ github.ref_name }}"
-          
+
+          echo "🔍 Preparando branch 'develop' local para comparação..."
+          # Trazer a ref remota develop para uma branch local 'develop' (força atualização)
+          git fetch origin develop:develop || true
+
+          # Se não existir a branch local 'develop', criá-la a partir de origin/develop
+          if ! git show-ref --verify --quiet refs/heads/develop; then
+            git branch --force develop origin/develop || true
+          fi
+
           echo "🔍 Verificando se há diferenças entre as branches..."
-          # We need to fetch the existing develop branch to be able to diff against it
-          git fetch origin "develop":"develop"
-          
-          if git diff --quiet "origin/develop"...origin/${{ github.ref_name }}; then
+          if git diff --quiet develop..."${{ github.ref_name }}"; then
             echo "⚠️ Nenhuma diferença entre a feature e a develop. Nenhum PR será criado."
             exit 0
           fi
-          
+
           echo "🔍 Verificando PRs abertos..."
-          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "develop" --json number | jq 'length')
-          
-          if [ "$OPEN_PR_COUNT" -eq "0" ]; then
+          # tornar resiliente caso GH falhe: retornar 0 por padrão
+          OPEN_PR_COUNT=$(gh pr list --state open --head "${{ github.ref_name }}" --base "develop" --json number 2>/dev/null | jq 'length' 2>/dev/null || echo 0)
+
+          if [ "${OPEN_PR_COUNT:-0}" -eq "0" ]; then
             echo "✨ Nenhum PR aberto encontrado. Criando novo Pull Request..."
             gh pr create \
               --base "develop" \

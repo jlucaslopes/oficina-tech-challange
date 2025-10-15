@@ -1,133 +1,136 @@
-# 🛠️ API de Gerenciamento de Oficina
+# 🧰 API de Gerenciamento de Oficina — Fase de Deploy e Infraestrutura
 
-API REST desenvolvida em **Java 21** com **Spring Boot**, utilizando **Maven** como gerenciador de dependências.
-O sistema gerencia operações de uma oficina mecânica, com autenticação via **JWT**.
+API REST desenvolvida em **Java 21** com **Spring Boot**, projetada para o gerenciamento de operações de uma oficina mecânica.  
+Nesta fase, o foco foi a **refatoração completa do código**, aplicação de **Clean Code** e implementação de uma **arquitetura de deploy automatizada** utilizando **Kubernetes**, **Terraform** e **GitHub Actions**.
 
 ---
 
-## 📌 Funcionalidades
+## 🎯 Objetivos desta Fase
 
-- Autenticação com **JWT**
-- Endpoint `/login` para geração de token
-- Endpoints protegidos por autenticação
-- Docker Compose para subir a aplicação facilmente
-- Export de **collection Insomnia** para testes
+- Refatorar o código para seguir os princípios de **Clean Code** e boas práticas de arquitetura.
+- Criar uma estrutura completa para **deploy automatizado** e **infraestrutura como código**.
+- Implementar **pipelines CI/CD** e **ambiente orquestrado com Kubernetes**.
+- Prover um ambiente escalável, seguro e reprodutível em qualquer máquina.
 
-## 🚀 Tecnologias Utilizadas
+---
 
+## 🧩 Arquitetura da Solução
+
+### 🏗️ Componentes da Aplicação
+- **Spring Boot (Java 21)** — API REST principal.
+- **Spring Data JPA + Hibernate** — Persistência de dados.
+- **Spring Security + JWT** — Autenticação e autorização.
+- **MySQL** — Banco de dados relacional.
+- **Docker** — Empacotamento da aplicação.
+- **Kubernetes (Minikube)** — Orquestração de containers.
+- **Terraform** — Provisionamento da infraestrutura.
+- **GitHub Actions** — CI/CD automatizado.
+
+---
+
+### ☁️ Infraestrutura Provisionada
+
+A infraestrutura é definida como código na pasta `infra/terraform/`, e contempla:
+
+- **Cluster Kubernetes** (Minikube local ou cloud provider)
+- **Namespace dedicado à aplicação**
+- **Secrets**, **ConfigMaps**, **Volumes Persistentes** e **Services**
+- **LoadBalancer** para exposição pública da API
+- **Banco de Dados MySQL** provisionado no cluster
+
+---
+
+### 🔄 Fluxo de Deploy Automatizado
+
+1. **Push ou PR** para o repositório GitHub.
+2. **GitHub Actions** é acionado:
+    - Faz build da imagem Docker.
+    - Envia a imagem para o repositório Docker Hub (`jlucaslopes/oficina`).
+    - Instala e inicializa o **Minikube**.
+    - Executa o **Terraform Apply** para provisionar a infraestrutura.
+    - Aplica os manifests do **Kubernetes** (pasta `infra/k8s`).
+3. A aplicação é implantada automaticamente no cluster.
+
+---
+
+## ⚙️ Instruções de Execução
+
+### 🧪 Execução Local
+
+#### Pré-requisitos
 - **Java 21**
-- **Spring Boot**
-- **Spring Security**
-- **JWT (JSON Web Token)**
 - **Maven**
-- **Docker & Docker Compose**
-- **Insomnia** (para testes de API)
+- **Docker (opcional)**
 
----
-
-## 📂 Estrutura do Projeto
-
-```
-
-/
-├── docker-compose.yml                  # Arquivo para subir aplicação
-├── pom.xml                             # Dependências Maven
-├── src/                                # Código-fonte
-├── insomnia\Oficina-collection.json    # Collection de testes no Insomnia
-└── README.md                           # Este arquivo
-
-````
-
----
-
-## ⚙️ Como Rodar o Projeto
-
-### 1️⃣ Pré-requisitos
-- **Java 21** instalado
-- **Maven** instalado
-- **Docker** e **Docker Compose** instalados
-
-### 2️⃣ Rodando com Docker Compose
-Na raiz do projeto, execute:
-
+#### Passos
 ```bash
-docker-compose up --build
-````
-
-A aplicação ficará disponível em:
-
+mvn spring-boot:run
+```
+A aplicação estará disponível em:
 ```
 http://localhost:8080
 ```
 
-### 3️⃣ Rodando localmente (sem Docker)
+---
 
-Na raiz do projeto, execute:
+### ☸️ Deploy em Kubernetes
+
+#### 1️⃣ Subir o cluster (Minikube)
+```bash
+minikube start
+```
+
+#### 2️⃣ Aplicar os manifests
+```bash
+kubectl apply -f infra/k8s/
+```
+
+#### 3️⃣ Verificar os pods
+```bash
+kubectl get pods
+```
+
+#### 4️⃣ Expor o serviço
+```bash
+minikube service oficina-service
+```
+
+---
+
+### 🌍 Provisionamento da Infraestrutura com Terraform
+
+Na pasta `infra/terraform`, execute:
 
 ```bash
-mvn spring-boot:run
+terraform init
+terraform plan
+terraform apply -auto-approve
+```
+
+Isso criará todos os recursos necessários (rede, cluster, storage, etc).
+
+---
+
+## 🧱 Estrutura do Projeto
+
+```
+/
+├── src/                     # Código-fonte Java (Spring Boot)
+├── infra/
+│   ├── k8s/                  # Manifests do Kubernetes
+│   └── terraform/            # Infraestrutura como código
+├── .github/workflows/        # Pipelines de CI/CD
+├── pom.xml                   # Dependências Maven
+└── README.md                 # Este arquivo
 ```
 
 ---
 
-## 🔑 Autenticação
+## 🧠 Considerações Finais
 
-A API utiliza autenticação JWT.
-Para acessar os endpoints protegidos, siga os passos:
-
-### 1️⃣ Gerar token
-
-Faça um **POST** para:
-
-```
-POST /login
-Content-Type: application/json
-```
-
-**Body:**
-
-```json
-{
-  "username": "fiap",
-  "password": "1234"
-}
-```
-
-**Resposta esperada:**
-
-```json
-{
-  "token": "seu-token-jwt-aqui"
-}
-```
-
----
-
-### 2️⃣ Usar o token
-
-Em qualquer requisição para endpoints protegidos, envie o header:
-
-```
-Authorization: Bearer seu-token-jwt-aqui
-```
-
----
-
-## 🧪 Testando com Insomnia
-
-O projeto contém um arquivo `Oficina-collection.json` exportado com todos os endpoints para facilitar os testes.
-
-Para usar:
-
-1. Abra o **Insomnia**
-2. Vá em **Application → Import/Export → Import Data**
-3. Selecione o arquivo `Oficina-collection.json` na raiz do projeto
-4. Teste os endpoints (já configurados com o JWT)
-
----
-
-## 📜 Licença
-
-Este projeto é de uso livre para fins de estudo e demonstração.
+Esta versão do projeto representa uma **base sólida de arquitetura moderna**, integrando:
+- **Clean Code e boas práticas de engenharia**
+- **Infraestrutura como código**
+- **Automação de deploy e observabilidade**
 
 ---

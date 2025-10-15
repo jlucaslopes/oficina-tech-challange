@@ -134,3 +134,4 @@ Esta versão do projeto representa uma **base sólida de arquitetura moderna**, 
 - **Automação de deploy e observabilidade**
 
 ---
+

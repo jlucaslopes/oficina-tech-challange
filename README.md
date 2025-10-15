@@ -3,6 +3,9 @@
 API REST desenvolvida em **Java 21** com **Spring Boot**, projetada para o gerenciamento de operações de uma oficina mecânica.  
 Nesta fase, o foco foi a **refatoração completa do código**, aplicação de **Clean Code** e implementação de uma **arquitetura de deploy automatizada** utilizando **Kubernetes**, **Terraform** e **GitHub Actions**.
 
+Video
+https://www.youtube.com/watch?v=Y4dfhBzoge8
+
 ---
 
 ## 🎯 Objetivos desta Fase
